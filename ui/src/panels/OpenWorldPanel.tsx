@@ -82,21 +82,37 @@ export function OpenWorldPanel() {
   }, [player]);
 
   useEffect(() => {
-    const onKey = (event: KeyboardEvent) => {
-      const key = event.key.toLowerCase();
-      if (!['w', 'a', 's', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright', 'e'].includes(key)) return;
-      event.preventDefault();
+    const down = (event: KeyboardEvent) => keys.current.add(event.key.toLowerCase());
+    const up = (event: KeyboardEvent) => keys.current.delete(event.key.toLowerCase());
+    window.addEventListener('keydown', down);
+    window.addEventListener('keyup', up);
 
-      if (key === 'e') {
-        if (nearest) setNotice(`Entered ${nearest.name} — ${nearest.subtitle}`);
-        return;
+    let frame = 0;
+    let last = performance.now();
+    const tick = (now: number) => {
+      const dt = Math.min(32, now - last) / 16.67;
+      last = now;
+      const held = keys.current;
+      if (held.size) {
+        const step = (held.has('shift') ? 1.15 : 0.72) * dt;
+        setPlayer((p) => ({
+          x: Math.max(7, Math.min(93, p.x + ((held.has('a') || held.has('arrowleft') ? -1 : 0) + (held.has('d') || held.has('arrowright') ? 1 : 0)) * step)),
+          y: Math.max(8, Math.min(92, p.y + ((held.has('w') || held.has('arrowup') ? -1 : 0) + (held.has('s') || held.has('arrowdown') ? 1 : 0)) * step)),
+        }));
       }
-
-      // Continuous movement is handled by the game-loop listener above.
+      frame = requestAnimationFrame(tick);
     };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [nearest]);
+    frame = requestAnimationFrame(tick);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener('keydown', down);
+      window.removeEventListener('keyup', up);
+    };
+  }, []);
+
+  useEffect(() => {
+    setCamera((c) => ({ x: c.x + (player.x - c.x) * 0.18, y: c.y + (player.y - c.y) * 0.18 }));
+  }, [player]);
 
   return (
     <section className="open-world">
