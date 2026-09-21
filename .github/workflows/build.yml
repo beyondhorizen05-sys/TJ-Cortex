@@ -45,7 +45,7 @@ jobs:
       - run: pnpm install --no-frozen-lockfile
       - run: pnpm --filter @tj-cortex/sidecar run build
       - run: pnpm --filter @tj-cortex/ui run build
-      - run: pnpm --filter @tj-cortex/desktop tauri icon ../../branding/app-icons/icon.svg
+      - run: pnpm --filter @tj-cortex/desktop tauri icon ../branding/app-icons/icon.svg
       - run: pnpm --filter @tj-cortex/desktop tauri build
       - uses: actions/upload-artifact@v4
         with:
@@ -68,7 +68,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: pnpm
       - uses: dtolnay/rust-toolchain@stable
       - name: Install Linux dependencies
         run: |
