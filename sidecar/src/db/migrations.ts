@@ -196,6 +196,21 @@ export function runMigrations(sqlite: Database) {
       updated_at INTEGER NOT NULL
     );
 
+    CREATE TABLE IF NOT EXISTS task_briefs (
+      id TEXT PRIMARY KEY,
+      agent_id TEXT NOT NULL,
+      title TEXT NOT NULL,
+      question TEXT NOT NULL,
+      options_json TEXT NOT NULL DEFAULT '[]',
+      status TEXT NOT NULL DEFAULT 'pending',
+      selected_option_id TEXT,
+      answer_note TEXT,
+      created_at INTEGER NOT NULL,
+      answered_at INTEGER,
+      expires_at INTEGER
+    );
+    CREATE INDEX IF NOT EXISTS task_briefs_agent_status_idx ON task_briefs(agent_id, status);
+
     CREATE TABLE IF NOT EXISTS recipes (
       id TEXT PRIMARY KEY,
       name TEXT NOT NULL,
