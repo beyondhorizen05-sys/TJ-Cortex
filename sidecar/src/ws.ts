@@ -24,7 +24,7 @@ export function registerClient(ws: WebSocket) {
     clients.delete(ws);
     logger.debug({ count: clients.size }, 'ws client disconnected');
   });
-  ws.on('error', (err) => {
+  ws.on('error', (err: Error) => {
     logger.warn({ err: err.message }, 'ws client error');
     clients.delete(ws);
   });
