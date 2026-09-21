@@ -4,6 +4,8 @@ import { desc, eq } from 'drizzle-orm';
 import { z } from 'zod';
 import { db } from '../db/client.js';
 import { taskBriefs } from '../db/schema.js';
+import { broadcast } from '../ws.js';
+import { WS_EVENTS } from '@tj-cortex/shared';
 
 const Option = z.object({
   id: z.string().min(1),
@@ -57,7 +59,9 @@ export async function registerTaskBriefRoutes(app: FastifyInstance) {
       expiresAt: parsed.data.expiresAt ?? null,
     }).run();
 
-    return hydrate(db.select().from(taskBriefs).where(eq(taskBriefs.id, id)).all()[0]!);
+    const created = hydrate(db.select().from(taskBriefs).where(eq(taskBriefs.id, id)).all()[0]!);
+    broadcast(WS_EVENTS.TaskBriefCreated, created);
+    return created;
   });
 
   app.post('/task-briefs/:id/resolve', async (req, reply) => {
@@ -82,7 +86,9 @@ export async function registerTaskBriefRoutes(app: FastifyInstance) {
       answeredAt,
     }).where(eq(taskBriefs.id, id)).run();
 
-    return hydrate(db.select().from(taskBriefs).where(eq(taskBriefs.id, id)).all()[0]!);
+    const resolved = hydrate(db.select().from(taskBriefs).where(eq(taskBriefs.id, id)).all()[0]!);
+    broadcast(WS_EVENTS.TaskBriefResolved, resolved);
+    return resolved;
   });
 
   app.post('/task-briefs/:id/cancel', async (req, reply) => {
@@ -92,7 +98,9 @@ export async function registerTaskBriefRoutes(app: FastifyInstance) {
     if (row.status !== 'pending') return reply.code(409).send({ error: 'task brief is not pending' });
 
     db.update(taskBriefs).set({ status: 'cancelled' }).where(eq(taskBriefs.id, id)).run();
-    return hydrate(db.select().from(taskBriefs).where(eq(taskBriefs.id, id)).all()[0]!);
+    const cancelled = hydrate(db.select().from(taskBriefs).where(eq(taskBriefs.id, id)).all()[0]!);
+    broadcast(WS_EVENTS.TaskBriefCancelled, cancelled);
+    return cancelled;
   });
 }
 
