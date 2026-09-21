@@ -1,19 +1,3 @@
-import { useEffect } from 'react';
-import { useVillageEconomy } from '../state/economyStore';
-
-// inside the component:
-const econ = useVillageEconomy();
-
-useEffect(() => {
-  const off = econ.bind();
-  return off;
-}, []);
-
-// And in JSX:
-<OutboxVault lastDeliveryAt={econ.lastDeliveryAt} />
-<TradeExchange lastLedgerAt={econ.lastLedgerAt} />
-<GuildHall guildCount={econ.guildCount} />
-<MyelinBank totalBalanceCC={econ.totalBalanceCC} />
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Environment, ContactShadows } from '@react-three/drei';
 import { Sky } from './Sky';
@@ -30,6 +14,7 @@ import { GuildHall } from './buildings/GuildHall';
 import { MyelinBank } from './buildings/MyelinBank';
 import { Agent } from './agents/Agent';
 import { useVillage } from '../state/villageStore';
+import { useVillageEconomy } from '../state/economyStore';
 
 /**
  * The Cortex Village — a scene whose geometry and agent positions mirror
@@ -42,6 +27,12 @@ export function Village({ canvasHeight = 640 }: { canvasHeight?: number }) {
   const weather = useVillage((s) => s.weather);
   const selectedId = useVillage((s) => s.selectedAgentId);
   const select = useVillage((s) => s.select);
+  const econ = useVillageEconomy();
+
+  useEffect(() => {
+    const off = econ.bind();
+    return off;
+  }, [econ.bind]);
 
   // Camera follow hint for selected agent.
   useEffect(() => {
@@ -80,10 +71,10 @@ export function Village({ canvasHeight = 640 }: { canvasHeight?: number }) {
         <DendriteDiner hasIdle={anyIdle} />
         <NodeBuilding working={anyWorking} />
         <AxonDesk active={agents.filter((a) => a.state === 'working').length} />
-        <OutboxVault lastDeliveryAt={null /* wired in Turn 6 */} />
-        <TradeExchange lastLedgerAt={null /* wired in Turn 6 */} />
-        <GuildHall guildCount={0 /* wired in Turn 6 */} />
-        <MyelinBank totalBalanceCC={0 /* wired in Turn 6 */} />
+        <OutboxVault lastDeliveryAt={econ.lastDeliveryAt} />
+        <TradeExchange lastLedgerAt={econ.lastLedgerAt} />
+        <GuildHall guildCount={econ.guildCount} />
+        <MyelinBank totalBalanceCC={econ.totalBalanceCC} />
 
         {agents.map((a, i) => (
           <Agent key={a.id} agent={a} index={i} selected={a.id === selectedId} onClick={() => select(a.id)} />
