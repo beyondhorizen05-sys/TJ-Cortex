@@ -2,11 +2,14 @@ import { useEffect, useRef, useState } from 'react';
 import { Mic, MicOff } from 'lucide-react';
 import { PushToTalkRecorder } from '../lib/voiceRecorder';
 import { cn } from '../lib/format';
+import { api } from '../lib/api';
+import { useAgents } from '../store/agents';
 
 export function VoiceButton() {
   const recorder = useRef<PushToTalkRecorder | null>(null);
   const [recording, setRecording] = useState(false);
   const [ready, setReady] = useState(false);
+  const agentId = useAgents((s) => s.selectedId);
 
   useEffect(() => () => recorder.current?.cancel(), []);
 
@@ -31,6 +34,12 @@ export function VoiceButton() {
     try {
       const result = await active.stop();
       setReady(result.blob.size > 44);
+      if (agentId && result.blob.size > 44) {
+        const response = await api.transcribeVoice(agentId, result.blob);
+        if (response.ok && typeof response.output?.text === 'string') {
+          window.dispatchEvent(new CustomEvent('tj-cortex:voice-transcript', { detail: response.output.text }));
+        }
+      }
     } catch (error) {
       console.error('Voice capture failed:', error);
     } finally {
