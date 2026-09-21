@@ -73,10 +73,13 @@ export async function runTurn(opts: RunTurnOptions): Promise<RunTurnResult> {
   });
 
   // Build tool list (descriptors only; the schema is passed to the provider).
+  const boundaries = JSON.parse(agent.boundariesJson || '{}') as { allowedTools?: string[]; deniedTools?: string[] };
+  const allowedTools = boundaries.allowedTools ?? [];
+  const deniedTools = boundaries.deniedTools ?? [];
   const toolSpecs = listTools()
     .filter((t) => t.enabled)
-    .filter((t) => (agent.boundaries.allowedTools.length ? agent.boundaries.allowedTools.includes(t.name) : true))
-    .filter((t) => !agent.boundaries.deniedTools.includes(t.name))
+    .filter((t) => (allowedTools.length ? allowedTools.includes(t.name) : true))
+    .filter((t) => !deniedTools.includes(t.name))
     .map((t) => ({ name: t.name, description: t.description, parameters: t.parameters }));
 
   const systemPrompt = buildSystemPrompt(agent, toolSpecs.length > 0);
