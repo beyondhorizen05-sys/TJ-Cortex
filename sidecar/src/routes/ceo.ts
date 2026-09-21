@@ -123,6 +123,7 @@ function hydrateAgent(row: typeof agents.$inferSelect) {
     id: row.id,
     name: row.name,
     role: row.role,
+    isCeo: true,
     systemPrompt: row.systemPrompt,
     avatar: JSON.parse(row.avatarJson || '{}'),
     boundaries: JSON.parse(row.boundariesJson || '{}'),
