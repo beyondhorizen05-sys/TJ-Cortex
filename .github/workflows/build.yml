@@ -25,6 +25,7 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y libsecret-1-dev
       - run: pnpm install --no-frozen-lockfile
       - run: pnpm -r run typecheck
+      - run: pnpm test
       - run: pnpm --filter @tj-cortex/sidecar run build
       - run: pnpm --filter @tj-cortex/ui run build
 
