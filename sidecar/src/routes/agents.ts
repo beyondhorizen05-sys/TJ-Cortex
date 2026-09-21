@@ -47,6 +47,7 @@ export async function registerAgentRoutes(app: FastifyInstance) {
       .values({
         id,
         name: input.name,
+        crewClassId: input.crewClassId ?? null,
         role: input.role ?? 'generalist',
         systemPrompt: input.systemPrompt ?? '',
         avatarJson: JSON.stringify(input.avatar ?? {}),
@@ -76,6 +77,7 @@ export async function registerAgentRoutes(app: FastifyInstance) {
     const now = Date.now();
     const patch: Record<string, unknown> = { updatedAt: now };
     if (typeof body.name === 'string') patch.name = body.name;
+    if (typeof body.crewClassId === 'string') patch.crewClassId = body.crewClassId;
     if (typeof body.systemPrompt === 'string') patch.systemPrompt = body.systemPrompt;
     if (typeof body.providerId === 'string') patch.providerId = body.providerId;
     if (typeof body.modelId === 'string') patch.modelId = body.modelId;
@@ -105,6 +107,7 @@ function hydrate(row: typeof agents.$inferSelect) {
   return {
     id: row.id,
     name: row.name,
+    crewClassId: row.crewClassId ?? undefined,
     role: row.role,
     systemPrompt: row.systemPrompt,
     avatar: JSON.parse(row.avatarJson || '{}'),
