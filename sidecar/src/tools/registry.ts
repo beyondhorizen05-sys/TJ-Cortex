@@ -169,7 +169,7 @@ function eqId(id: string) {
 
 function riskToPermissionKind(risk: ToolDescriptor['risk'], category: ToolDescriptor['category']) {
   switch (risk) {
-    case 'read': return category === 'fs' ? 'fs.read' : category === 'http' ? 'http.outbound' : 'mcp.call';
+    case 'read': return category === 'fs' ? 'fs.read' : category === 'http' ? 'http.outbound' : category === 'voice' ? 'voice.capture' : 'mcp.call';
     case 'write': return category === 'fs' ? 'fs.write' : category === 'outbox' ? 'outbox.write' : 'mcp.call';
     case 'destructive': return 'shell.exec';
     case 'spend': return 'economy.spend';
