@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { WS_EVENTS } from '@tj-cortex/shared';
 import type { LedgerEntry, Guild } from '@tj-cortex/shared';
+import { on } from '../lib/wsBridge';
 
 interface VillageEconomyState {
   /** Timestamp of the most recent ledger entry; drives the Trade Exchange beacon. */
@@ -30,7 +31,6 @@ export const useVillageEconomy = create<VillageEconomyState>((set) => ({
   setGuildCount: (n) => set({ guildCount: n }),
 
   bind: () => {
-    const { on } = require('../lib/wsBridge') as typeof import('../lib/wsBridge');
     const offs: Array<() => void> = [];
     offs.push(on(WS_EVENTS.LedgerEntry, (e: LedgerEntry) => useVillageEconomy.getState().setLastLedger(e)));
     offs.push(on(WS_EVENTS.OutboxUpdated, (item: any) => useVillageEconomy.getState().setLastDelivery(item.createdAt)));
