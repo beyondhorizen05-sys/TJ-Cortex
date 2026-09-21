@@ -307,3 +307,7 @@
 .open-world__ceo-result { margin-top:18px; padding:13px; border:1px solid rgba(103,232,249,.14); border-radius:9px; background:rgba(34,211,238,.035); }
 .open-world__ceo-result p { margin:7px 0 0; color:#cbd5e1; white-space:pre-wrap; font-size:11px; line-height:1.55; max-height:220px; overflow:auto; }
 @media (max-width:720px) { .open-world__ceo-console { padding:10px; } .open-world__ceo-console-card { padding:17px; } .open-world__ceo-command-grid { grid-template-columns:1fr; } }
+
+
+.open-world__ceo-character-model { display:block; width:90px; height:104px; background:transparent; --poster-color:transparent; pointer-events:none; }
+.open-world__ceo-character-model::part(default-progress-bar) { display:none; }
