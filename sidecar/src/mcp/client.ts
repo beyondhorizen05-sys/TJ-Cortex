@@ -31,7 +31,7 @@ export async function connectMcp(config: McpServerConfig): Promise<void> {
       ? new StdioClientTransport({
           command: config.command!,
           args: config.args,
-          env: { ...process.env, ...config.env },
+          env: Object.fromEntries(Object.entries({ ...process.env, ...config.env }).filter(([, value]) => value !== undefined)) as Record<string, string>,
         })
       : new SSEClientTransport(new URL(config.url!));
 
