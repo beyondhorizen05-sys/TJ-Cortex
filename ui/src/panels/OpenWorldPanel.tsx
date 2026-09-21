@@ -58,7 +58,7 @@ export function OpenWorldPanel() {
   useEffect(() => {
     nearestRef.current = nearest;
     setNearby(nearest?.id ?? null);
-  }, [agents, select, setPanel]);
+  }, [nearest]);
 
   const getAgentPosition = (index: number): Vec2 => ({
     x: 27 + (index % 4) * 7,
