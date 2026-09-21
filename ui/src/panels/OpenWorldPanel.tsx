@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useAgents } from '../store/agents';
+import { CrewRecruitConsole } from '../components/CrewRecruitConsole';
 
 type Vec2 = { x: number; y: number };
 
@@ -22,6 +23,7 @@ export function OpenWorldPanel() {
   const [nearby, setNearby] = useState<string | null>(null);
   const [notice, setNotice] = useState('WASD / Arrow Keys to move · Shift to sprint · E to interact');
   const [camera, setCamera] = useState<Vec2>(player);
+  const [crewConsoleOpen, setCrewConsoleOpen] = useState(false);
   const keys = useRef(new Set<string>());
   const playerRef = useRef(player);
   const selected = agents.find((a) => a.id === selectedId);
@@ -58,7 +60,12 @@ export function OpenWorldPanel() {
     const interact = (event: KeyboardEvent) => {
       if (event.key.toLowerCase() !== 'e' || !nearest) return;
       event.preventDefault();
-      setNotice(`${nearest.name} — ${nearest.subtitle}`);
+      if (nearest.id === 'hq') {
+        setCrewConsoleOpen(true);
+        setNotice('Agent HQ — crew recruitment desk opened');
+      } else {
+        setNotice(`${nearest.name} — ${nearest.subtitle}`);
+      }
     };
 
     window.addEventListener('keydown', down);
@@ -132,7 +139,14 @@ export function OpenWorldPanel() {
               key={building.id}
               className={`open-world__building open-world__building--${building.tone} ${nearby === building.id ? 'is-nearby' : ''}`}
               style={{ left: `${building.x}%`, top: `${building.y}%` }}
-              onClick={() => setNotice(`${building.name} — ${building.subtitle}`)}
+              onClick={() => {
+                if (building.id === 'hq') {
+                  setCrewConsoleOpen(true);
+                  setNotice('Agent HQ — crew recruitment desk opened');
+                } else {
+                  setNotice(`${building.name} — ${building.subtitle}`);
+                }
+              }}
             >
               <span className="open-world__building-top" />
               <strong>{building.name}</strong>
@@ -184,6 +198,12 @@ export function OpenWorldPanel() {
           <small>{nearest ? 'Press E to interact' : 'Explore the city'}</small>
         </div>
       </aside>
+      {crewConsoleOpen && (
+        <CrewRecruitConsole
+          onClose={() => setCrewConsoleOpen(false)}
+          onNotice={setNotice}
+        />
+      )}
     </section>
   );
 }
