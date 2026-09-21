@@ -48,6 +48,7 @@ export type AgentBoundaries = z.infer<typeof AgentBoundaries>;
 export const Agent = z.object({
   id: z.string(),
   name: z.string().min(1),
+  crewClassId: z.string().optional(),
   role: AgentRole.default('generalist'),
   systemPrompt: z.string().default(''),
   avatar: AgentAvatar.default({}),
@@ -59,7 +60,6 @@ export const Agent = z.object({
   state: AgentState.default('idle'),
   location: z.enum(LOCATION_IDS).default('node'),
 
-  // Position in the village (2D for pathing; y computed by terrain).
   position: z.object({ x: z.number(), z: z.number() }).default({ x: 0, z: 0 }),
 
   walletId: z.string(),
