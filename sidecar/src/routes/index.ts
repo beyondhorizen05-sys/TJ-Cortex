@@ -12,9 +12,11 @@ import { registerGoogleAuthRoutes } from './google-auth.js';
 import { registerSettingsRoutes } from './settings.js';
 import { registerEconomyRoutes } from './economy.js';
 import { registerNegotiationRoutes } from './negotiation.js';
+import { registerVoiceRoutes } from './voice.js';
 
 export async function registerRoutes(app: FastifyInstance) {
   await registerNegotiationRoutes(app);
+  await registerVoiceRoutes(app);
   await registerAgentRoutes(app);
   await registerProviderRoutes(app);
   await registerConversationRoutes(app);
