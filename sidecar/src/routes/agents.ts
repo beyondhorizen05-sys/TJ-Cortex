@@ -2,7 +2,7 @@ import type { FastifyInstance } from 'fastify';
 import { randomUUID } from 'node:crypto';
 import { eq } from 'drizzle-orm';
 import { db } from '../db/client.js';
-import { agents, wallets, reputations } from '../db/schema.js';
+import { agents, wallets, reputations, settings } from '../db/schema.js';
 import { AgentCreateInput } from '@tj-cortex/shared';
 import { broadcast } from '../ws.js';
 import { WS_EVENTS } from '@tj-cortex/shared';
@@ -103,12 +103,23 @@ export async function registerAgentRoutes(app: FastifyInstance) {
   });
 }
 
+function isCeoAgent(agentId: string) {
+  const row = db.select().from(settings).where(eq(settings.key, 'ceo.profile')).all()[0];
+  if (!row) return false;
+  try {
+    return JSON.parse(row.value)?.agentId === agentId;
+  } catch {
+    return false;
+  }
+}
+
 function hydrate(row: typeof agents.$inferSelect) {
   return {
     id: row.id,
     name: row.name,
     crewClassId: row.crewClassId ?? undefined,
     role: row.role,
+    isCeo: isCeoAgent(row.id),
     systemPrompt: row.systemPrompt,
     avatar: JSON.parse(row.avatarJson || '{}'),
     boundaries: JSON.parse(row.boundariesJson || '{}'),
