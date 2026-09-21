@@ -3,7 +3,7 @@ import { create } from 'zustand';
 export type PanelId =
   | 'agents' | 'transcript' | 'providers' | 'recipes' | 'skills' | 'mcp'
   | 'outbox' | 'ledger' | 'contracts' | 'bounties' | 'guilds' | 'wallet'
-  | 'reputation' | 'cost' | 'settings' | 'village';
+  | 'reputation' | 'cost' | 'settings' | 'village' | 'openWorld';
 
 interface UiState {
   panel: PanelId;
