@@ -353,10 +353,8 @@ export function OpenWorldPanel() {
             setCeoConsoleOpen(false);
             releaseInteractionLock();
           }}
-          onNotice={(message) => {
-            setNotice(message);
-            setCeoSpeaking(false);
-          }}
+          onNotice={setNotice}
+          onSpeakingChange={setCeoSpeaking}
         />
       )}
       {crewConsoleOpen && (
