@@ -10,6 +10,7 @@ interface CeoCharacterProps {
   selected?: boolean;
   onClick?: () => void;
   isCommandOpen?: boolean;
+  isSpeaking?: boolean;
 }
 
 function resolveVisualState(state: string, commandOpen: boolean): CeoVisualState {
@@ -31,9 +32,10 @@ export function CeoCharacter({
   selected = false,
   onClick,
   isCommandOpen = false,
+  isSpeaking = false,
 }: CeoCharacterProps) {
   const [assetFailed, setAssetFailed] = useState(false);
-  const visualState = useMemo(() => resolveVisualState(state, isCommandOpen), [state, isCommandOpen]);
+  const visualState = useMemo(() => isSpeaking ? 'speaking' : resolveVisualState(state, isCommandOpen), [state, isCommandOpen, isSpeaking]);
 
   useEffect(() => {
     setAssetFailed(false);
