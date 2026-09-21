@@ -12,16 +12,23 @@ const BUILDINGS = [
   { id: 'meeting', name: 'Meeting Center', subtitle: 'Agent meetings', x: 43, y: 38, tone: 'rose' },
 ] as const;
 
+const MOVEMENT_KEYS = new Set(['w', 'a', 's', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright', 'shift']);
+
 export function OpenWorldPanel() {
   const agents = useAgents((s) => s.agents);
   const selectedId = useAgents((s) => s.selectedId);
   const select = useAgents((s) => s.select);
   const [player, setPlayer] = useState<Vec2>({ x: 50, y: 52 });
   const [nearby, setNearby] = useState<string | null>(null);
-  const [notice, setNotice] = useState('WASD / Arrow Keys to move · E to interact');
+  const [notice, setNotice] = useState('WASD / Arrow Keys to move · Shift to sprint · E to interact');
   const [camera, setCamera] = useState<Vec2>(player);
   const keys = useRef(new Set<string>());
+  const playerRef = useRef(player);
   const selected = agents.find((a) => a.id === selectedId);
+
+  useEffect(() => {
+    playerRef.current = player;
+  }, [player]);
 
   const nearest = useMemo(() => {
     let best: (typeof BUILDINGS)[number] | null = null;
@@ -43,49 +50,20 @@ export function OpenWorldPanel() {
   useEffect(() => {
     const down = (event: KeyboardEvent) => {
       const key = event.key.toLowerCase();
-      if (['w', 'a', 's', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright'].includes(key)) keys.current.add(key);
+      if (!MOVEMENT_KEYS.has(key)) return;
+      event.preventDefault();
+      keys.current.add(key);
     };
     const up = (event: KeyboardEvent) => keys.current.delete(event.key.toLowerCase());
+    const interact = (event: KeyboardEvent) => {
+      if (event.key.toLowerCase() !== 'e' || !nearest) return;
+      event.preventDefault();
+      setNotice(`${nearest.name} — ${nearest.subtitle}`);
+    };
+
     window.addEventListener('keydown', down);
     window.addEventListener('keyup', up);
-    let frame = 0;
-    let last = performance.now();
-    const tick = (now: number) => {
-      const dt = Math.min(32, now - last) / 16.67;
-      last = now;
-      const held = keys.current;
-      if (held.size) {
-        const speed = held.has('shift') ? 0 : 0;
-        void speed;
-        const step = 0.72 * dt;
-        setPlayer((p) => ({
-          x: Math.max(7, Math.min(93, p.x + ((held.has('a') || held.has('arrowleft') ? -1 : 0) + (held.has('d') || held.has('arrowright') ? 1 : 0)) * step)),
-          y: Math.max(8, Math.min(92, p.y + ((held.has('w') || held.has('arrowup') ? -1 : 0) + (held.has('s') || held.has('arrowdown') ? 1 : 0)) * step)),
-        }));
-      }
-      frame = requestAnimationFrame(tick);
-    };
-    frame = requestAnimationFrame(tick);
-    return () => {
-      cancelAnimationFrame(frame);
-      window.removeEventListener('keydown', down);
-      window.removeEventListener('keyup', up);
-    };
-  }, []);
-
-  useEffect(() => {
-    const smooth = () => {
-      setCamera((c) => ({ x: c.x + (player.x - c.x) * 0.14, y: c.y + (player.y - c.y) * 0.14 }));
-    };
-    const frame = requestAnimationFrame(smooth);
-    return () => cancelAnimationFrame(frame);
-  }, [player]);
-
-  useEffect(() => {
-    const down = (event: KeyboardEvent) => keys.current.add(event.key.toLowerCase());
-    const up = (event: KeyboardEvent) => keys.current.delete(event.key.toLowerCase());
-    window.addEventListener('keydown', down);
-    window.addEventListener('keyup', up);
+    window.addEventListener('keydown', interact);
 
     let frame = 0;
     let last = performance.now();
@@ -93,26 +71,39 @@ export function OpenWorldPanel() {
       const dt = Math.min(32, now - last) / 16.67;
       last = now;
       const held = keys.current;
-      if (held.size) {
-        const step = (held.has('shift') ? 1.15 : 0.72) * dt;
-        setPlayer((p) => ({
-          x: Math.max(7, Math.min(93, p.x + ((held.has('a') || held.has('arrowleft') ? -1 : 0) + (held.has('d') || held.has('arrowright') ? 1 : 0)) * step)),
-          y: Math.max(8, Math.min(92, p.y + ((held.has('w') || held.has('arrowup') ? -1 : 0) + (held.has('s') || held.has('arrowdown') ? 1 : 0)) * step)),
-        }));
+      const horizontal = (held.has('a') || held.has('arrowleft') ? -1 : 0) + (held.has('d') || held.has('arrowright') ? 1 : 0);
+      const vertical = (held.has('w') || held.has('arrowup') ? -1 : 0) + (held.has('s') || held.has('arrowdown') ? 1 : 0);
+      const moving = horizontal !== 0 || vertical !== 0;
+      const step = (held.has('shift') ? 1.15 : 0.72) * dt;
+
+      if (moving) {
+        setPlayer((current) => {
+          const next = {
+            x: Math.max(7, Math.min(93, current.x + horizontal * step)),
+            y: Math.max(8, Math.min(92, current.y + vertical * step)),
+          };
+          playerRef.current = next;
+          return next;
+        });
       }
+
+      const target = playerRef.current;
+      setCamera((current) => ({
+        x: current.x + (target.x - current.x) * 0.12,
+        y: current.y + (target.y - current.y) * 0.12,
+      }));
+
       frame = requestAnimationFrame(tick);
     };
+
     frame = requestAnimationFrame(tick);
     return () => {
       cancelAnimationFrame(frame);
       window.removeEventListener('keydown', down);
       window.removeEventListener('keyup', up);
+      window.removeEventListener('keydown', interact);
     };
-  }, []);
-
-  useEffect(() => {
-    setCamera((c) => ({ x: c.x + (player.x - c.x) * 0.18, y: c.y + (player.y - c.y) * 0.18 }));
-  }, [player]);
+  }, [nearest]);
 
   return (
     <section className="open-world">
