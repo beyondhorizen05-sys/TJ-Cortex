@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { WS_EVENTS } from '@tj-cortex/shared';
 import type { Agent } from '@tj-cortex/shared';
+import { on } from '../lib/wsBridge';
 
 export type Weather = 'clear' | 'rain' | 'fog';
 
@@ -99,7 +100,6 @@ export const useVillage = create<VillageState>((set, get) => ({
 /* ---------- WS wiring (called by VillageMount on mount) ---------- */
 export function bindVillageEvents() {
   // Lazy import to avoid circular dependency at module load time.
-  const { on } = require('../lib/wsBridge') as typeof import('../lib/wsBridge');
   const offs: Array<() => void> = [];
 
   offs.push(on(WS_EVENTS.AgentCreated, (a: Agent) => {
