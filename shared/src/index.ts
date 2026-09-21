@@ -1,6 +1,7 @@
 export * from './constants.js';
 export * from './copy.js';
 export * from './events.js';
+export * from './audio.js';
 
 export * from './types/agent.js';
 export * from './types/provider.js';
