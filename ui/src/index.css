@@ -262,3 +262,23 @@
   .crew-console__detail dt { color:#64748b; font:8px 'JetBrains Mono',monospace; text-transform:uppercase; }
   .crew-console__detail dd { margin:4px 0 0; color:#e2e8f0; font-size:11px; }
 }
+
+
+.open-world__ceo-badge { margin:6px 0 0; color:#c4b5fd; font:600 9px 'JetBrains Mono',monospace; letter-spacing:.12em; text-transform:uppercase; }
+.open-world__ceo-card { min-width:120px; }
+.open-world__ceo-avatar { position:relative; width:58px; height:72px; margin:8px 0; overflow:hidden; border:1px solid rgba(167,139,250,.3); border-radius:18px 18px 12px 12px; background:radial-gradient(circle at 50% 30%,rgba(103,232,249,.22),rgba(76,29,149,.18) 45%,rgba(2,6,23,.9)); perspective:300px; }
+.open-world__ceo-avatar-glow { position:absolute; inset:-25%; border-radius:50%; background:radial-gradient(circle,rgba(103,232,249,.2),transparent 65%); animation:ceoPulse 2.8s ease-in-out infinite; }
+.open-world__ceo-avatar-silhouette { position:absolute; left:50%; bottom:5px; width:34px; height:55px; transform:translateX(-50%) rotateY(-8deg); border-radius:45% 45% 20% 20%; background:linear-gradient(145deg,#e7b18c 0 38%,#171326 39% 62%,#6c4cf1 63%); box-shadow:0 8px 18px rgba(0,0,0,.35); }
+.open-world__ceo-character { position:absolute; z-index:7; width:76px; min-height:112px; transform:translate(-50%,-82%); padding:0; border:0; background:transparent; color:#f8fafc; cursor:pointer; filter:drop-shadow(0 12px 12px rgba(0,0,0,.3)); }
+.open-world__ceo-character-image { display:block; width:76px; height:92px; object-fit:contain; object-position:center bottom; filter:saturate(1.08) contrast(1.03); transform:translateZ(20px); }
+.open-world__ceo-character-fallback { position:relative; display:block; width:52px; height:82px; margin:0 auto; transform:rotateY(-8deg); transform-style:preserve-3d; }
+.open-world__ceo-character-hair { position:absolute; z-index:3; top:2px; left:12px; width:29px; height:31px; border-radius:50% 50% 42% 42%; background:linear-gradient(145deg,#21172a,#090711); box-shadow:5px 4px 0 rgba(167,139,250,.18); }
+.open-world__ceo-character-face { position:absolute; z-index:2; top:11px; left:17px; width:21px; height:25px; border-radius:45% 45% 48% 48%; background:linear-gradient(145deg,#f4c4a1,#d99570); box-shadow:inset -4px -3px 0 rgba(93,45,31,.12); }
+.open-world__ceo-character-body { position:absolute; bottom:0; left:7px; width:39px; height:49px; border-radius:18px 18px 7px 7px; background:linear-gradient(145deg,#8b5cf6,#201437 62%,#090712); box-shadow:inset 5px 0 0 rgba(255,255,255,.08); }
+.open-world__ceo-character-state,.open-world__ceo-character-name { display:block; width:max-content; max-width:120px; margin:2px auto 0; padding:2px 5px; border-radius:4px; background:rgba(2,6,23,.82); border:1px solid rgba(103,232,249,.18); font:600 7px 'JetBrains Mono',monospace; white-space:nowrap; }
+.open-world__ceo-character-state--working { color:#67e8f9; }
+.open-world__ceo-character-state--meeting { color:#fda4af; }
+.open-world__ceo-character-state--offline { color:#64748b; }
+.open-world__ceo-character-name { color:#e9d5ff; font-size:8px; }
+.open-world__ceo-character.is-selected { filter:drop-shadow(0 0 16px rgba(103,232,249,.45)); }
+@keyframes ceoPulse { 0%,100% { transform:scale(.9); opacity:.55; } 50% { transform:scale(1.15); opacity:1; } }
