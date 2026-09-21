@@ -289,4 +289,9 @@ export function runMigrations(sqlite: Database) {
     'INSERT OR IGNORE INTO _migrations (id, appliedAt) VALUES (?, ?)',
   );
   mark.run('0001_baseline', Date.now());
+
+  const agentColumns = sqlite.prepare('PRAGMA table_info(agents)').all() as Array<{ name: string }>;
+  if (!agentColumns.some((column) => column.name === 'crew_class_id')) {
+    sqlite.exec('ALTER TABLE agents ADD COLUMN crew_class_id TEXT');
+  }
 }
