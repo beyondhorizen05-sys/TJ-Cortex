@@ -9,6 +9,7 @@ import { startNightShift } from './nightshift.js';
 import { connectMcp } from './mcp/client.js';
 import { db } from './db/client.js';
 import { mcpServers } from './db/schema.js';
+import './tools/voice.js';
 
 export async function createServer() {
   const app = Fastify({
