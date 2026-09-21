@@ -4,6 +4,7 @@ import { sqliteTable, text, integer, real, index, uniqueIndex, primaryKey } from
 export const agents = sqliteTable('agents', {
   id: text('id').primaryKey(),
   name: text('name').notNull(),
+  crewClassId: text('crew_class_id'),
   role: text('role').notNull().default('generalist'),
   systemPrompt: text('system_prompt').notNull().default(''),
   avatarJson: text('avatar_json').notNull().default('{}'),
