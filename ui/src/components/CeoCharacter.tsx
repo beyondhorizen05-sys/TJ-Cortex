@@ -18,6 +18,8 @@ export function CeoCharacter({
   onClick,
 }: CeoCharacterProps) {
   const [assetFailed, setAssetFailed] = useState(false);
+  const normalizedState = state.toLowerCase();
+  const assetPath = '/assets/ceo-character.glb';
 
   return (
     <button
@@ -29,10 +31,14 @@ export function CeoCharacter({
       aria-label={`${name}, CEO Agent`}
     >
       {!assetFailed ? (
-        <img
-          className="open-world__ceo-character-image"
-          src="/assets/ceo-character.webp"
-          alt=""
+        <model-viewer
+          className="open-world__ceo-character-model"
+          src={assetPath}
+          alt={`${name} · CEO Agent`}
+          camera-controls={false}
+          disable-zoom
+          interaction-prompt="none"
+          autoplay
           onError={() => setAssetFailed(true)}
         />
       ) : (
@@ -42,7 +48,7 @@ export function CeoCharacter({
           <span className="open-world__ceo-character-body" />
         </span>
       )}
-      <span className={`open-world__ceo-character-state open-world__ceo-character-state--${state.toLowerCase()}`}>
+      <span className={`open-world__ceo-character-state open-world__ceo-character-state--${normalizedState}`}>
         CEO · {state}
       </span>
       <span className="open-world__ceo-character-name">{name}</span>
