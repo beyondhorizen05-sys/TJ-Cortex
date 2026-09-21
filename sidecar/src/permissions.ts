@@ -52,9 +52,24 @@ export async function requestPermission(opts: RequestOptions): Promise<Permissio
   if (existing) {
     if (!existing.expiresAt || existing.expiresAt > now) {
       if (existing.decision === 'allow_always') {
+        const id = randomUUID();
         logger.debug({ kind: opts.kind, scope: opts.scope }, 'permission auto-allowed');
+        db.insert(permissionRequests)
+          .values({
+            id,
+            agentId: opts.agentId,
+            kind: opts.kind,
+            scope: opts.scope,
+            reason: 'Auto-allowed by policy.',
+            risk: opts.risk,
+            status: 'resolved',
+            decision: 'allow_always',
+            createdAt: now,
+            resolvedAt: now,
+          })
+          .run();
         return {
-          id: randomUUID(),
+          id,
           agentId: opts.agentId,
           kind: opts.kind,
           scope: opts.scope,
