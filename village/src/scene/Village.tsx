@@ -13,6 +13,7 @@ import { TradeExchange } from './buildings/TradeExchange';
 import { GuildHall } from './buildings/GuildHall';
 import { MyelinBank } from './buildings/MyelinBank';
 import { Agent } from './agents/Agent';
+import { useEffect } from 'react';
 import { useVillage } from '../state/villageStore';
 import { useVillageEconomy } from '../state/economyStore';
 
