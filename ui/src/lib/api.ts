@@ -5,6 +5,9 @@ import type {
   LedgerEntry, Wallet, Contract, Bounty, Guild, Reputation, OutboxItem, CeoProfile,
 } from '@tj-cortex/shared';
 
+type CrewClassSummary = { id: string; name: string; summary: string; role: string; tier: 'builtin' | 'archive'; suggestedTools: string[] };
+type CrewCatalog = { all: CrewClassSummary[]; builtin: CrewClassSummary[]; archive: CrewClassSummary[] };
+
 const BASE = (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
   ? '/api'
   : 'http://' + SIDECAR_DEFAULT_HOST + ':' + SIDECAR_DEFAULT_PORT;
@@ -23,6 +26,8 @@ async function http<T>(path: string, init?: RequestInit): Promise<T> {
 
 export const api = {
   listAgents: () => http<Agent[]>('/agents'),
+  listCrewClasses: () => http<CrewCatalog>('/crew/classes'),
+  recruitCrew: (crewClassId: string, name?: string) => http<Agent>('/crew/recruit', { method: 'POST', body: JSON.stringify({ crewClassId, name }) }),
   getAgent: (id: string) => http<Agent>('/agents/' + id),
   createAgent: (input: Partial<Agent> & { name: string }) => http<Agent>('/agents', { method: 'POST', body: JSON.stringify(input) }),
   updateAgent: (id: string, patch: Partial<Agent>) => http<Agent>('/agents/' + id, { method: 'PATCH', body: JSON.stringify(patch) }),
