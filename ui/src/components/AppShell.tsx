@@ -25,6 +25,7 @@ import { ReputationPanel } from '../panels/ReputationPanel';
 import { CostPanel } from '../panels/CostPanel';
 import { SettingsPanel } from '../panels/SettingsPanel';
 import { VillageHost } from '../panels/VillageHost';
+import { OpenWorldPanel } from '../panels/OpenWorldPanel';
 
 const PANELS = {
   agents: AgentsPanel,
