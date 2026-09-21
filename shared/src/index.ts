@@ -12,6 +12,7 @@ export * from './types/memory.js';
 export * from './types/village.js';
 export * from './types/economy.js';
 export * from './types/recipe.js';
+export * from './types/taskBrief.js';
 export * from './types/skill.js';
 export * from './types/mcp.js';
 export * from './types/integration.js';
