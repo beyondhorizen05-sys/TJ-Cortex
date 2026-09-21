@@ -1,6 +1,7 @@
 name: TJ-Cortex CI
 
 on:
+  workflow_dispatch:
   push:
     branches: [main]
     tags: ["v*"]
@@ -20,7 +21,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: pnpm
       - run: pnpm install --no-frozen-lockfile
       - run: pnpm -r run typecheck
       - run: pnpm --filter @tj-cortex/sidecar run build
@@ -39,7 +39,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: pnpm
       - uses: dtolnay/rust-toolchain@stable
       - run: pnpm install --no-frozen-lockfile
       - run: pnpm --filter @tj-cortex/sidecar run build
