@@ -10,6 +10,7 @@ import { connectMcp } from './mcp/client.js';
 import { db } from './db/client.js';
 import { mcpServers } from './db/schema.js';
 import './tools/voice.js';
+import './tools/task-brief.js';
 
 export async function createServer() {
   const app = Fastify({

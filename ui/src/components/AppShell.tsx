@@ -25,9 +25,12 @@ import { ReputationPanel } from '../panels/ReputationPanel';
 import { CostPanel } from '../panels/CostPanel';
 import { SettingsPanel } from '../panels/SettingsPanel';
 import { VillageHost } from '../panels/VillageHost';
+import { OpenWorldPanel } from '../panels/OpenWorldPanel';
+import { CrewConsole } from '../panels/CrewConsole';
 
 const PANELS = {
   agents: AgentsPanel,
+  crew: CrewConsole,
   transcript: TranscriptPanel,
   providers: ProvidersPanel,
   recipes: RecipesPanel,
@@ -43,6 +46,7 @@ const PANELS = {
   cost: CostPanel,
   settings: SettingsPanel,
   village: VillageHost,
+  openWorld: OpenWorldPanel,
 } as const;
 
 export function AppShell() {

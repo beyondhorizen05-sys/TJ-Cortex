@@ -13,10 +13,18 @@ import { registerSettingsRoutes } from './settings.js';
 import { registerEconomyRoutes } from './economy.js';
 import { registerNegotiationRoutes } from './negotiation.js';
 import { registerVoiceRoutes } from './voice.js';
+import { registerTaskBriefRoutes } from './task-briefs.js';
+import { registerCrewRoutes } from './crew.js';
+import { registerCrewRecruitRoutes } from './crew-recruit.js';
+import { registerCeoRoutes } from './ceo.js';
 
 export async function registerRoutes(app: FastifyInstance) {
   await registerNegotiationRoutes(app);
   await registerVoiceRoutes(app);
+  await registerTaskBriefRoutes(app);
+  await registerCrewRoutes(app);
+  await registerCrewRecruitRoutes(app);
+  await registerCeoRoutes(app);
   await registerAgentRoutes(app);
   await registerProviderRoutes(app);
   await registerConversationRoutes(app);
