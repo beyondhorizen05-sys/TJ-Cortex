@@ -23,6 +23,9 @@ export const WS_EVENTS = {
   ToolCallResolved: 'tool.call.resolved',
   PermissionRequested: 'permission.requested',
   PermissionResolved: 'permission.resolved',
+  TaskBriefCreated: 'task_brief.created',
+  TaskBriefResolved: 'task_brief.resolved',
+  TaskBriefCancelled: 'task_brief.cancelled',
 
   // Village
   VillagePositionUpdate: 'village.position',
