@@ -18,10 +18,6 @@ const BUILDING_PANELS: Partial<Record<(typeof BUILDINGS)[number]['id'], PanelId>
   guild: 'reputation', bank: 'wallet', outbox: 'outbox', mcp: 'mcp', meeting: 'transcript',
 };
 
-/*
-] as const;
-*/
-
 const MOVEMENT_KEYS = new Set(['w', 'a', 's', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright', 'shift']);
 
 export function OpenWorldPanel() {
@@ -33,10 +29,12 @@ export function OpenWorldPanel() {
   const [notice, setNotice] = useState('WASD / Arrow Keys to move · Shift to sprint · E to interact');
   const [camera, setCamera] = useState<Vec2>(player);
   const [crewConsoleOpen, setCrewConsoleOpen] = useState(false);
+  const [interactionLocked, setInteractionLocked] = useState(false);
   const keys = useRef(new Set<string>());
+  const nearestRef = useRef<(typeof BUILDINGS)[number] | null>(null);
+  const interactionLockRef = useRef(false);
   const playerRef = useRef(player);
   const selected = agents.find((a) => a.id === selectedId);
-  const setPanel = useUi((s) => s.setPanel);
   const setPanel = useUi((s) => s.setPanel);
 
   useEffect(() => {
@@ -57,8 +55,27 @@ export function OpenWorldPanel() {
   }, [player]);
 
   useEffect(() => {
+    nearestRef.current = nearest;
     setNearby(nearest?.id ?? null);
-  }, [nearest]);
+  }, []);
+
+  const openBuilding = (building: (typeof BUILDINGS)[number]) => {
+    if (interactionLockRef.current) return;
+    interactionLockRef.current = true;
+    setInteractionLocked(true);
+    setNotice(`${building.name} — ${building.subtitle}`);
+    if (building.id === 'hq') {
+      setCrewConsoleOpen(true);
+      return;
+    }
+    const panel = BUILDING_PANELS[building.id];
+    if (panel) setPanel(panel);
+  };
+
+  const releaseInteractionLock = () => {
+    interactionLockRef.current = false;
+    setInteractionLocked(false);
+  };
 
   useEffect(() => {
     const down = (event: KeyboardEvent) => {
@@ -69,16 +86,11 @@ export function OpenWorldPanel() {
     };
     const up = (event: KeyboardEvent) => keys.current.delete(event.key.toLowerCase());
     const interact = (event: KeyboardEvent) => {
-      if (event.key.toLowerCase() !== 'e' || !nearest) return;
+      if (event.key.toLowerCase() !== 'e') return;
+      const building = nearestRef.current;
+      if (!building || interactionLockRef.current) return;
       event.preventDefault();
-      if (nearest.id === 'hq') {
-        setCrewConsoleOpen(true);
-        setNotice('Agent HQ — crew recruitment desk opened');
-      } else {
-        setNotice(`${nearest.name} — ${nearest.subtitle}`);
-        const panel = BUILDING_PANELS[nearest.id];
-        if (panel) setPanel(panel);
-      }
+      openBuilding(building);
     };
 
     window.addEventListener('keydown', down);
@@ -152,16 +164,7 @@ export function OpenWorldPanel() {
               key={building.id}
               className={`open-world__building open-world__building--${building.tone} ${nearby === building.id ? 'is-nearby' : ''}`}
               style={{ left: `${building.x}%`, top: `${building.y}%` }}
-              onClick={() => {
-                if (building.id === 'hq') {
-                  setCrewConsoleOpen(true);
-                  setNotice('Agent HQ — crew recruitment desk opened');
-                  return;
-                }
-                setNotice(`${building.name} — ${building.subtitle}`);
-                const panel = BUILDING_PANELS[building.id];
-                if (panel) setPanel(panel);
-              }}
+              onClick={() => openBuilding(building)}
             >
               <span className="open-world__building-top" />
               <strong>{building.name}</strong>
@@ -213,9 +216,18 @@ export function OpenWorldPanel() {
           <small>{nearest ? 'Press E to interact' : 'Explore the city'}</small>
         </div>
       </aside>
+      {interactionLocked && (
+        <button className="open-world__interaction-backdrop" aria-label="Close active interaction" onClick={() => {
+          setCrewConsoleOpen(false);
+          releaseInteractionLock();
+        }} />
+      )}
       {crewConsoleOpen && (
         <CrewRecruitConsole
-          onClose={() => setCrewConsoleOpen(false)}
+          onClose={() => {
+            setCrewConsoleOpen(false);
+            releaseInteractionLock();
+          }}
           onNotice={setNotice}
         />
       )}
