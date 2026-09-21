@@ -14,6 +14,7 @@ export function CeoExecutiveConsole({ ceo, agents, onClose, onNotice }: Props) {
   const [command, setCommand] = useState('');
   const [running, setRunning] = useState(false);
   const [result, setResult] = useState('');
+  const [speaking, setSpeaking] = useState(false);
 
   const targets = useMemo(() => agents.filter((agent) => agent.id !== ceo.id), [agents]);
 
@@ -21,6 +22,7 @@ export function CeoExecutiveConsole({ ceo, agents, onClose, onNotice }: Props) {
     const input = command.trim();
     if (!input || running) return;
     setRunning(true);
+    setSpeaking(true);
     setResult('');
     try {
       const target = targets.find((agent) => agent.id === targetId);
@@ -35,15 +37,16 @@ export function CeoExecutiveConsole({ ceo, agents, onClose, onNotice }: Props) {
       setResult(error instanceof Error ? error.message : 'Executive command failed.');
     } finally {
       setRunning(false);
+      setSpeaking(false);
     }
   };
 
   return (
     <div className="open-world__ceo-console" role="dialog" aria-modal="true" aria-label="CEO Executive Console">
-      <div className="open-world__ceo-console-card">
+      <div className={`open-world__ceo-console-card ${speaking ? 'is-speaking' : ''}`}>
         <header className="open-world__ceo-console-header">
           <div>
-            <span className="open-world__panel-label">CEO COMMAND // EXECUTIVE LAYER</span>
+            <span className="open-world__panel-label">CEO COMMAND // {speaking ? 'SPEAKING' : 'EXECUTIVE LAYER'}</span>
             <h2>{ceo.name}</h2>
             <p>Main AI executive · delegate work through the existing runtime, permissions and agent system.</p>
           </div>
