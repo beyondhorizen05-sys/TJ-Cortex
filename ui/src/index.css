@@ -311,3 +311,18 @@
 
 .open-world__ceo-character-model { display:block; width:90px; height:104px; background:transparent; --poster-color:transparent; pointer-events:none; }
 .open-world__ceo-character-model::part(default-progress-bar) { display:none; }
+
+
+.open-world__ceo-character--walking .open-world__ceo-character-model { animation: ceoWalkBob .52s ease-in-out infinite; }
+.open-world__ceo-character--working .open-world__ceo-character-model { animation: ceoWorkFloat 2.2s ease-in-out infinite; }
+.open-world__ceo-character--meeting .open-world__ceo-character-model { animation: ceoMeetingPulse 1.8s ease-in-out infinite; }
+.open-world__ceo-character--command .open-world__ceo-character-model { animation: ceoCommandPulse 1.15s ease-in-out infinite; }
+.open-world__ceo-character--speaking .open-world__ceo-character-model { animation: ceoSpeakPulse .72s ease-in-out infinite; }
+.open-world__ceo-character--offline { opacity:.52; filter:grayscale(.7) drop-shadow(0 8px 10px rgba(0,0,0,.3)); }
+.open-world__ceo-character--command .open-world__ceo-character-state,
+.open-world__ceo-character--speaking .open-world__ceo-character-state { color:#67e8f9; border-color:rgba(103,232,249,.55); box-shadow:0 0 16px rgba(34,211,238,.12); }
+@keyframes ceoWalkBob { 0%,100% { transform:translateY(0) rotateZ(-1deg); } 50% { transform:translateY(-4px) rotateZ(1deg); } }
+@keyframes ceoWorkFloat { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-2px); } }
+@keyframes ceoMeetingPulse { 0%,100% { transform:scale(1); } 50% { transform:scale(1.025); } }
+@keyframes ceoCommandPulse { 0%,100% { transform:translateY(0) scale(1); } 50% { transform:translateY(-3px) scale(1.035); } }
+@keyframes ceoSpeakPulse { 0%,100% { transform:translateY(0) scaleY(1); } 50% { transform:translateY(-2px) scaleY(1.025); } }
