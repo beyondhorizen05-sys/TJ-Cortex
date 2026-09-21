@@ -28,6 +28,8 @@ export function OpenWorldPanel() {
   const [nearby, setNearby] = useState<string | null>(null);
   const [notice, setNotice] = useState('WASD / Arrow Keys to move · Shift to sprint · E to interact');
   const [camera, setCamera] = useState<Vec2>(player);
+  const [agentWorldPositions, setAgentWorldPositions] = useState<Record<string, Vec2>>({});
+  const agentWorldPositionsRef = useRef<Record<string, Vec2>>({});
   const [crewConsoleOpen, setCrewConsoleOpen] = useState(false);
   const [interactionLocked, setInteractionLocked] = useState(false);
   const keys = useRef(new Set<string>());
@@ -58,18 +60,31 @@ export function OpenWorldPanel() {
   useEffect(() => {
     nearestRef.current = nearest;
     setNearby(nearest?.id ?? null);
-  }, [nearest]);
+  }, [agents, nearest]);
 
-  const getAgentPosition = (index: number): Vec2 => ({
+  const getAgentHome = (index: number): Vec2 => ({
     x: 27 + (index % 4) * 7,
     y: 29 + Math.floor(index / 4) * 8,
   });
+
+  useEffect(() => {
+    const next = { ...agentWorldPositionsRef.current };
+    agents.slice(0, 12).forEach((agent, index) => {
+      if (!next[agent.id]) next[agent.id] = getAgentHome(index);
+    });
+    const activeIds = new Set(agents.slice(0, 12).map((agent) => agent.id));
+    Object.keys(next).forEach((id) => {
+      if (!activeIds.has(id)) delete next[id];
+    });
+    agentWorldPositionsRef.current = next;
+    setAgentWorldPositions(next);
+  }, [agents]);
 
   const nearestAgent = useMemo(() => {
     let bestId: string | null = null;
     let distance = Infinity;
     agents.slice(0, 12).forEach((agent, index) => {
-      const pos = getAgentPosition(index);
+      const pos = agentWorldPositions[agent.id] ?? getAgentHome(index);
       const d = Math.hypot(pos.x - player.x, pos.y - player.y);
       if (d < distance) {
         distance = d;
@@ -141,6 +156,29 @@ export function OpenWorldPanel() {
       const moving = horizontal !== 0 || vertical !== 0;
       const step = (held.has('shift') ? 1.15 : 0.72) * dt;
 
+      const nextAgentPositions = { ...agentWorldPositionsRef.current };
+      let agentPositionsChanged = false;
+      agents.slice(0, 12).forEach((agent, index) => {
+        const current = nextAgentPositions[agent.id] ?? getAgentHome(index);
+        const state = String(agent.state ?? 'idle').toLowerCase();
+        const target = state === 'meeting'
+          ? { x: 43, y: 38 }
+          : state === 'working'
+            ? { x: 50, y: 52 }
+            : getAgentHome(index);
+        const speed = state === 'offline' ? 0.04 : state === 'meeting' ? 0.085 : 0.055;
+        const next = {
+          x: current.x + (target.x - current.x) * speed * dt,
+          y: current.y + (target.y - current.y) * speed * dt,
+        };
+        if (Math.abs(next.x - current.x) > 0.01 || Math.abs(next.y - current.y) > 0.01) agentPositionsChanged = true;
+        nextAgentPositions[agent.id] = next;
+      });
+      if (agentPositionsChanged) {
+        agentWorldPositionsRef.current = nextAgentPositions;
+        setAgentWorldPositions(nextAgentPositions);
+      }
+
       if (moving) {
         setPlayer((current) => {
           const next = {
@@ -207,8 +245,9 @@ export function OpenWorldPanel() {
 
           {agents.slice(0, 12).map((agent, index) => {
             const active = agent.id === selectedId;
-            const x = 27 + (index % 4) * 7;
-            const y = 29 + Math.floor(index / 4) * 8;
+            const position = agentWorldPositions[agent.id] ?? getAgentHome(index);
+            const x = position.x;
+            const y = position.y;
             return (
               <button
                 key={agent.id}
@@ -221,8 +260,8 @@ export function OpenWorldPanel() {
                 }}
                 title={agent.name}
               >
-                <span className="open-world__agent-head" />
-                <span className="open-world__agent-label">{agent.name}</span>
+                <span className={`open-world__agent-head open-world__agent-head--${String(agent.state ?? 'idle').toLowerCase()}`} />
+                <span className="open-world__agent-label">{agent.name} · {String(agent.state ?? 'idle')}</span>
               </button>
             );
           })}
