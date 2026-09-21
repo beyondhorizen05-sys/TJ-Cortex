@@ -11,6 +11,7 @@ interface CeoCharacterProps {
   onClick?: () => void;
   isCommandOpen?: boolean;
   isSpeaking?: boolean;
+  facing?: 'left' | 'right';
 }
 
 function resolveVisualState(state: string, commandOpen: boolean): CeoVisualState {
@@ -33,6 +34,7 @@ export function CeoCharacter({
   onClick,
   isCommandOpen = false,
   isSpeaking = false,
+  facing = 'right',
 }: CeoCharacterProps) {
   const [assetFailed, setAssetFailed] = useState(false);
   const visualState = useMemo(() => isSpeaking ? 'speaking' : resolveVisualState(state, isCommandOpen), [state, isCommandOpen, isSpeaking]);
@@ -44,7 +46,7 @@ export function CeoCharacter({
   return (
     <button
       type="button"
-      className={`open-world__ceo-character open-world__ceo-character--${visualState} ${selected ? 'is-selected' : ''}`}
+      className={`open-world__ceo-character open-world__ceo-character--${visualState} open-world__ceo-character--facing-${facing} ${selected ? 'is-selected' : ''}`}
       style={{ left: `${x}%`, top: `${y}%` }}
       onClick={onClick}
       title={`${name} · CEO Agent · ${visualState}`}
