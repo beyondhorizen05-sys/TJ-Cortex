@@ -50,6 +50,7 @@ export const Agent = z.object({
   name: z.string().min(1),
   crewClassId: z.string().optional(),
   role: AgentRole.default('generalist'),
+  isCeo: z.boolean().default(false),
   systemPrompt: z.string().default(''),
   avatar: AgentAvatar.default({}),
   boundaries: AgentBoundaries.default({}),
