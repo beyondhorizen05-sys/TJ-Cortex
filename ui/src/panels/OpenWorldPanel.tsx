@@ -354,22 +354,35 @@ export function OpenWorldPanel() {
           {agents.slice(0, 12).filter((agent) => agent.id !== ceoAgent?.id).map((agent, index) => {
             const active = agent.id === selectedId;
             const position = agentWorldPositions[agent.id] ?? getAgentHome(index);
-            const x = position.x;
-            const y = position.y;
+            const role = String(agent.role ?? 'agent').toLowerCase();
+            const archetype = role.includes('research') ? 'researcher'
+              : role.includes('engineer') || role.includes('dev') ? 'engineer'
+              : role.includes('sales') || role.includes('growth') ? 'sales'
+              : role.includes('design') || role.includes('creative') ? 'creative'
+              : role.includes('finance') || role.includes('account') ? 'finance'
+              : index % 5 === 0 ? 'strategist'
+              : index % 5 === 1 ? 'engineer'
+              : index % 5 === 2 ? 'researcher'
+              : index % 5 === 3 ? 'creative'
+              : 'operations';
             return (
               <button
                 key={agent.id}
-                className={`open-world__agent ${active ? 'is-selected' : ''}`}
-                style={{ left: `${x}%`, top: `${y}%` }}
+                className={`open-world__agent open-world__agent--${archetype} ${active ? 'is-selected' : ''}`}
+                style={{ left: `${position.x}%`, top: `${position.y}%` }}
                 onClick={() => {
                   select(agent.id);
                   setPanel('agents');
-                  setNotice(`${agent.name} · ${String(agent.state ?? 'unknown')} · runtime profile opened`);
+                  setNotice(`${agent.name} · ${archetype} · ${String(agent.state ?? 'unknown')} · runtime profile opened`);
                 }}
-                title={agent.name}
+                title={`${agent.name} · ${archetype}`}
               >
-                <span className={`open-world__agent-head open-world__agent-head--${String(agent.state ?? 'idle').toLowerCase()}`} />
-                <span className="open-world__agent-label">{agent.name} · {String(agent.state ?? 'idle')}</span>
+                <span className="open-world__agent-avatar">
+                  <span className="open-world__agent-head" />
+                  <span className="open-world__agent-body" />
+                  <span className="open-world__agent-role">{archetype.slice(0, 3).toUpperCase()}</span>
+                </span>
+                <span className="open-world__agent-label">{agent.name} · {archetype}</span>
               </button>
             );
           })}
