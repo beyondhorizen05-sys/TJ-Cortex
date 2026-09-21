@@ -59,7 +59,9 @@ export class PushToTalkRecorder {
     const samples = concatFloat32(this.chunks);
     const mono16k = resampleMonoPcm(samples, inputRate, 16000);
     const wav = encodePcm16Wav(mono16k, 16000);
-    const blob = new Blob([wav], { type: 'audio/wav' });
+    const wavBuffer = new ArrayBuffer(wav.byteLength);
+    new Uint8Array(wavBuffer).set(wav);
+    const blob = new Blob([wavBuffer], { type: 'audio/wav' });
     this.cleanup();
     return { blob, durationMs, sampleRate: 16000 };
   }
