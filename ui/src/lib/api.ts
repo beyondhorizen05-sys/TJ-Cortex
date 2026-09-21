@@ -44,6 +44,7 @@ export const api = {
   resolvePermission: (id: string, decision: 'allow_once' | 'allow_always' | 'deny') => http<{ ok: true }>('/permissions/resolve', { method: 'POST', body: JSON.stringify({ id, decision }) }),
   listTools: () => http<ToolDescriptor[]>('/tools'),
   invokeTool: (agentId: string, toolName: string, args: Record<string, unknown>) => http<any>('/tools/invoke', { method: 'POST', body: JSON.stringify({ agentId, toolName, args }) }),
+  transcribeVoice: (agentId: string, audio: Blob) => blobToBase64(audio).then((audioBase64) => http<any>('/voice/transcribe', { method: 'POST', body: JSON.stringify({ agentId, audioBase64 }) })),
   listRecipes: () => http<Recipe[]>('/recipes'),
   createRecipe: (input: Partial<Recipe> & { name: string }) => http<Recipe>('/recipes', { method: 'POST', body: JSON.stringify(input) }),
   deleteRecipe: (id: string) => http<{ ok: true }>('/recipes/' + id, { method: 'DELETE' }),
@@ -66,3 +67,12 @@ export const api = {
   getSettings: () => http<Record<string, unknown>>('/settings'),
   setSetting: (key: string, value: unknown) => http<{ ok: true }>('/settings/' + key, { method: 'PUT', body: JSON.stringify(value) }),
 };
+async function blobToBase64(blob: Blob): Promise<string> {
+  const bytes = new Uint8Array(await blob.arrayBuffer());
+  let binary = '';
+  const chunkSize = 0x8000;
+  for (let offset = 0; offset < bytes.length; offset += chunkSize) {
+    binary += String.fromCharCode(...bytes.subarray(offset, Math.min(offset + chunkSize, bytes.length)));
+  }
+  return btoa(binary);
+}
