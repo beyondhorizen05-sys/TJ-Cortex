@@ -43,11 +43,14 @@ function Rain() {
     const pos = points.current.geometry.attributes.position as THREE.BufferAttribute;
     const arr = pos.array as Float32Array;
     for (let i = 0; i < count; i++) {
-      arr[i * 3 + 1] -= dt * 22;
-      if (arr[i * 3 + 1] < 0.5) {
-        arr[i * 3 + 1] = 40 + Math.random() * 8;
-        arr[i * 3] = (Math.random() - 0.5) * 160;
-        arr[i * 3 + 2] = (Math.random() - 0.5) * 160;
+      const y = i * 3 + 1;
+      const x = i * 3;
+      const z = i * 3 + 2;
+      arr[y]! -= dt * 22;
+      if (arr[y]! < 0.5) {
+        arr[y] = 40 + Math.random() * 8;
+        arr[x] = (Math.random() - 0.5) * 160;
+        arr[z] = (Math.random() - 0.5) * 160;
       }
     }
     pos.needsUpdate = true;
