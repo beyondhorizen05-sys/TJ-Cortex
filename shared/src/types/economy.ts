@@ -111,3 +111,14 @@ export const Reputation = z.object({
   updatedAt: z.number(),
 });
 export type Reputation = z.infer<typeof Reputation>;
+export interface OutboxItem {
+  id: string;
+  agentId: string;
+  title: string;
+  path: string;
+  mimeType: string | null;
+  sizeBytes: number;
+  refType: string | null;
+  refId: string | null;
+  createdAt: number;
+}
