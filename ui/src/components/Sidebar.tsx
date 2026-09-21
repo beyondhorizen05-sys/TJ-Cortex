@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import {
   Users, MessageSquare, Cpu, BookOpen, Wrench, Plug, Package, ScrollText,
-  FileSignature, Trophy, Castle, Wallet, Star, DollarSign, Settings, Map, Globe2,
+  FileSignature, Trophy, Castle, Wallet, Star, DollarSign, Settings, Map, Globe2, UserPlus,
 } from 'lucide-react';
 import { useUi, type PanelId } from '../store/ui';
 import { cn } from '../lib/format';
@@ -11,6 +11,7 @@ interface NavItem { id: PanelId; label: string; icon: any; }
 const NAV: { group: string; items: NavItem[] }[] = [
   { group: 'Cortex', items: [
     { id: 'agents', label: 'Agents', icon: Users },
+    { id: 'crew', label: 'Crew', icon: UserPlus },
     { id: 'transcript', label: 'Transcript', icon: MessageSquare },
     { id: 'village', label: 'The Cortex Village', icon: Map },
     { id: 'openWorld', label: 'Open World', icon: Globe2 },
