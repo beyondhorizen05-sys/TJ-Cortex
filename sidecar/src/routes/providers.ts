@@ -18,7 +18,7 @@ export async function registerProviderRoutes(app: FastifyInstance) {
   app.get('/providers/:id/models', async (req) => {
     const { id } = req.params as { id: string };
     const provider = registry.get(id as any);
-    const models = await provider.listModels(ctx as any);
+    const models = await provider.listModels();
     return models;
   });
 
