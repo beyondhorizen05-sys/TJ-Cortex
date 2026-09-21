@@ -43,7 +43,7 @@ export const api = {
   googleSignOut: () => http<{ ok: true }>('/auth/google/signout', { method: 'POST' }),
   googleSetClient: (clientId: string, clientSecret?: string) => http<{ ok: true }>('/auth/google/client', { method: 'POST', body: JSON.stringify({ clientId, clientSecret }) }),
   listPolicies: () => http<any[]>('/permissions/policies'),
-  resolvePermission: (id: string, decision: 'allow_once' | 'allow_always' | 'deny') => http<{ ok: true }>('/permissions/resolve', { method: 'POST', body: JSON.stringify({ id, decision })),
+  resolvePermission: (id: string, decision: 'allow_once' | 'allow_always' | 'deny') => http<{ ok: true }>('/permissions/resolve', { method: 'POST', body: JSON.stringify({ id, decision }) }),
   listTools: () => http<ToolDescriptor[]>('/tools'),
   invokeTool: (agentId: string, toolName: string, args: Record<string, unknown>) => http<any>('/tools/invoke', { method: 'POST', body: JSON.stringify({ agentId, toolName, args }) }),
   transcribeVoice: (agentId: string, audio: Blob) => blobToBase64(audio).then((audioBase64) => http<any>('/voice/transcribe', { method: 'POST', body: JSON.stringify({ agentId, audioBase64 }) })),
