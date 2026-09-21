@@ -36,6 +36,7 @@ export function OpenWorldPanel() {
   const [crewConsoleOpen, setCrewConsoleOpen] = useState(false);
   const [ceoConsoleOpen, setCeoConsoleOpen] = useState(false);
   const [ceoWalking, setCeoWalking] = useState(false);
+  const [ceoSpeaking, setCeoSpeaking] = useState(false);
   const [interactionLocked, setInteractionLocked] = useState(false);
   const keys = useRef(new Set<string>());
   const nearestRef = useRef<(typeof BUILDINGS)[number] | null>(null);
@@ -268,6 +269,7 @@ export function OpenWorldPanel() {
               name={ceoAgent.name}
               state={ceoConsoleOpen ? 'command' : ceoWalking ? 'walking' : String(ceoAgent.state ?? 'idle')}
               isCommandOpen={ceoConsoleOpen}
+              isSpeaking={ceoSpeaking}
               x={agentWorldPositions[ceoAgent.id]?.x ?? 50}
               y={agentWorldPositions[ceoAgent.id]?.y ?? 52}
               selected={ceoAgent.id === selectedId}
@@ -351,7 +353,10 @@ export function OpenWorldPanel() {
             setCeoConsoleOpen(false);
             releaseInteractionLock();
           }}
-          onNotice={setNotice}
+          onNotice={(message) => {
+            setNotice(message);
+            setCeoSpeaking(false);
+          }}
         />
       )}
       {crewConsoleOpen && (
