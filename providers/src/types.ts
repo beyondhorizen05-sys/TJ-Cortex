@@ -47,7 +47,7 @@ export class ProviderError extends Error {
       | 'unknown',
     public override message: string,
     public retryable = false,
-    public cause?: unknown,
+    public override cause?: unknown,
   ) {
     super(message);
     this.name = 'ProviderError';
