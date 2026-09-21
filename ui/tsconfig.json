@@ -8,6 +8,12 @@
     "resolveJsonModule": true,
     "baseUrl": "..",
     "paths": {
+      "@tj-cortex/shared": ["shared/src/index.ts"],
+      "@tj-cortex/shared/*": ["shared/src/*"],
+      "@tj-cortex/providers": ["providers/src/index.ts"],
+      "@tj-cortex/providers/*": ["providers/src/*"],
+      "@tj-cortex/economy": ["economy/src/index.ts"],
+      "@tj-cortex/economy/*": ["economy/src/*"],
       "@tj-cortex/village": ["village/src/index.ts"],
       "@tj-cortex/village/*": ["village/src/*"]
     }
