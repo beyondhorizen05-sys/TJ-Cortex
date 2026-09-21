@@ -16,6 +16,8 @@ export const config = {
   workspaceDir: join(DATA_DIR, 'workspace'),
   googleClientId: process.env.TJ_CORTEX_GOOGLE_CLIENT_ID ?? '',
   googleClientSecret: process.env.TJ_CORTEX_GOOGLE_CLIENT_SECRET ?? '',
+  whisperCli: process.env.TJ_CORTEX_WHISPER_CLI ?? '',
+  whisperModel: process.env.TJ_CORTEX_WHISPER_MODEL ?? '',
   logLevel: process.env.TJ_CORTEX_LOG_LEVEL ?? 'info',
   nightShift: {
     start: process.env.TJ_CORTEX_NIGHTSHIFT_START ?? '22:00',
