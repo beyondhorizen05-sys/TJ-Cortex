@@ -4,6 +4,7 @@ import { CrewRecruitConsole } from '../components/CrewRecruitConsole';
 import { useUi, type PanelId } from '../store/ui';
 
 type Vec2 = { x: number; y: number };
+type AgentWithCeoFlag = { isCeo?: boolean; role?: string };
 
 const BUILDINGS = [
   { id: 'hq', name: 'Agent HQ', subtitle: 'Agents & workspaces', x: 18, y: 18, tone: 'violet' },
@@ -38,6 +39,7 @@ export function OpenWorldPanel() {
   const interactionLockRef = useRef(false);
   const playerRef = useRef(player);
   const selected = agents.find((a) => a.id === selectedId);
+  const ceoAgent = agents.find((agent) => Boolean((agent as AgentWithCeoFlag).isCeo) || String(agent.role ?? '').toLowerCase() === 'ceo');
   const setPanel = useUi((s) => s.setPanel);
 
   useEffect(() => {
@@ -60,7 +62,7 @@ export function OpenWorldPanel() {
   useEffect(() => {
     nearestRef.current = nearest;
     setNearby(nearest?.id ?? null);
-  }, [agents]);
+  }, [nearest]);
 
   const getAgentHome = (index: number): Vec2 => ({
     x: 27 + (index % 4) * 7,
@@ -216,6 +218,7 @@ export function OpenWorldPanel() {
           <p className="open-world__eyebrow">TJ-CORTEX // OPEN WORLD</p>
           <h1>Living Agent City</h1>
           <p className="open-world__notice">{notice}</p>
+          <p className="open-world__ceo-badge">{ceoAgent ? `CEO AGENT · ${ceoAgent.name}` : "CEO CHARACTER · READY FOR IDENTITY"}</p>
         </div>
         <div className="open-world__status">
           <span className="open-world__dot" />
@@ -273,6 +276,15 @@ export function OpenWorldPanel() {
       </div>
 
       <aside className="open-world__panel">
+        <div className="open-world__ceo-card">
+          <span className="open-world__panel-label">CEO AGENT</span>
+          <div className="open-world__ceo-avatar" aria-label="CEO character">
+            <span className="open-world__ceo-avatar-glow" />
+            <span className="open-world__ceo-avatar-silhouette" />
+          </div>
+          <strong>{ceoAgent?.name ?? 'Identity pending'}</strong>
+          <small>{ceoAgent ? 'Main AI · Executive control' : 'Startup will request her name'}</small>
+        </div>
         <div>
           <span className="open-world__panel-label">PLAYER</span>
           <strong>Operator</strong>
