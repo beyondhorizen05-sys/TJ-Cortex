@@ -1,4 +1,4 @@
-const tokens = require('../branding/colors/tailwind.tokens.cjs');
+const tokens = require('../branding/colors/tailwind.tokens.js');
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
