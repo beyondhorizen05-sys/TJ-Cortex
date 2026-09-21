@@ -15,6 +15,7 @@ import { registerNegotiationRoutes } from './negotiation.js';
 import { registerVoiceRoutes } from './voice.js';
 import { registerTaskBriefRoutes } from './task-briefs.js';
 import { registerCrewRoutes } from './crew.js';
+import { registerCrewRecruitRoutes } from './crew-recruit.js';
 import { registerCeoRoutes } from './ceo.js';
 
 export async function registerRoutes(app: FastifyInstance) {
@@ -22,6 +23,7 @@ export async function registerRoutes(app: FastifyInstance) {
   await registerVoiceRoutes(app);
   await registerTaskBriefRoutes(app);
   await registerCrewRoutes(app);
+  await registerCrewRecruitRoutes(app);
   await registerCeoRoutes(app);
   await registerAgentRoutes(app);
   await registerProviderRoutes(app);
