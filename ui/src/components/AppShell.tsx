@@ -44,6 +44,7 @@ const PANELS = {
   cost: CostPanel,
   settings: SettingsPanel,
   village: VillageHost,
+  openWorld: OpenWorldPanel,
 } as const;
 
 export function AppShell() {
