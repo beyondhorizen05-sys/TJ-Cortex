@@ -60,7 +60,7 @@ export function OpenWorldPanel() {
   useEffect(() => {
     nearestRef.current = nearest;
     setNearby(nearest?.id ?? null);
-  }, [agents, nearest]);
+  }, [agents]);
 
   const getAgentHome = (index: number): Vec2 => ({
     x: 27 + (index % 4) * 7,
