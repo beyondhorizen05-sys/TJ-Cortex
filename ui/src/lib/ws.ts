@@ -1,18 +1,26 @@
-import { WS_EVENTS, type WsEnvelope } from '@tj-cortex/shared';
+import { WS_EVENTS, SIDECAR_DEFAULT_HOST, SIDECAR_DEFAULT_PORT, type WsEnvelope } from '@tj-cortex/shared';
 
 type Handler = (payload: any, envelope: WsEnvelope) => void;
 const handlers = new Map<string, Set<Handler>>();
 let ws: WebSocket | null = null;
+let reconnectTimer: ReturnType<typeof setTimeout> | null = null;
 let reconnectDelay = 500;
 const statusListeners = new Set<(connected: boolean) => void>();
 
 function url(): string {
   const proto = location.protocol === 'https:' ? 'wss' : 'ws';
-  return `${proto}://${location.host}/ws`;
+  const host = location.hostname === 'localhost' || location.hostname === '127.0.0.1'
+    ? location.hostname
+    : SIDECAR_DEFAULT_HOST;
+  return proto + '://' + host + ':' + SIDECAR_DEFAULT_PORT + '/ws';
 }
 
 export function startWs() {
   if (ws && (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING)) return;
+  if (reconnectTimer) {
+    clearTimeout(reconnectTimer);
+    reconnectTimer = null;
+  }
   ws = new WebSocket(url());
 
   ws.addEventListener('open', () => {
@@ -22,7 +30,10 @@ export function startWs() {
 
   ws.addEventListener('close', () => {
     emitStatus(false);
-    setTimeout(startWs, reconnectDelay);
+    reconnectTimer = setTimeout(() => {
+      reconnectTimer = null;
+      startWs();
+    }, reconnectDelay);
     reconnectDelay = Math.min(reconnectDelay * 2, 8000);
   });
 
