@@ -39,11 +39,11 @@ export function CrewRecruitConsole({ onClose, onNotice }: CrewRecruitConsoleProp
     setRecruiting(true);
     setError('');
     try {
-      const agent = await useAgents.getState().create({
-        name: name.trim() || selected.name,
-        crewClassId: selected.id,
-        role: selected.role as never,
-      });
+      const agent = await api.recruitCrew(selected.id, name.trim() || undefined);
+      const current = useAgents.getState();
+      if (!current.agents.some((item) => item.id === agent.id)) {
+        useAgents.setState({ agents: [...current.agents, agent], selectedId: agent.id });
+      }
       setName('');
       onNotice(`${agent.name} recruited as ${selected.name}`);
       onClose();
