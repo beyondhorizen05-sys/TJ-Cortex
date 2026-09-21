@@ -11,10 +11,9 @@ import { registerOutboxRoutes } from './outbox.js';
 import { registerGoogleAuthRoutes } from './google-auth.js';
 import { registerSettingsRoutes } from './settings.js';
 import { registerEconomyRoutes } from './economy.js';
+import { registerNegotiationRoutes } from './negotiation.js';
 
 export async function registerRoutes(app: FastifyInstance) {
-  import { registerNegotiationRoutes } from './negotiation.js';
-// ...
   await registerNegotiationRoutes(app);
   await registerAgentRoutes(app);
   await registerProviderRoutes(app);
@@ -28,5 +27,4 @@ export async function registerRoutes(app: FastifyInstance) {
   await registerGoogleAuthRoutes(app);
   await registerSettingsRoutes(app);
   await registerEconomyRoutes(app);
-
 }
