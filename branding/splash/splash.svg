@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="TJ-Cortex splash">
+  <defs>
+    <linearGradient id="spb" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0B0B14"/><stop offset="1" stop-color="#1E1B4B"/>
+    </linearGradient>
+  </defs>
+  <rect width="1024" height="1024" fill="url(#spb)"/>
+  <use href="../logo/tj-cortex-icon.svg#icon" x="192" y="192" width="640" height="640"/>
+  <text x="512" y="880" text-anchor="middle" font-family="'Space Grotesk', Inter, sans-serif"
+        font-weight="700" font-size="52" fill="#F8FAFC">TJ-CORTEX</text>
+  <text x="512" y="920" text-anchor="middle" font-family="Inter, sans-serif"
+        font-size="18" letter-spacing="6" fill="#22D3EE">THINK · CONNECT · BUILD · EARN</text>
+</svg>

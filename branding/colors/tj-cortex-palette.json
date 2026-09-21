@@ -1,0 +1,35 @@
+{
+  "name": "TJ-Cortex",
+  "version": "1.0.0",
+  "colors": {
+    "primary": {
+      "cortexViolet": "#6C4CF1",
+      "synapseCyan": "#22D3EE",
+      "deepCortex": "#0B0B14",
+      "neuralWhite": "#F8FAFC"
+    },
+    "secondary": {
+      "dendriteGreen": "#34D399",
+      "axonAmber": "#F59E0B",
+      "somaRose": "#FB7185",
+      "myelinBlue": "#3B82F6",
+      "gliaGray": "#64748B",
+      "tradeTeal": "#14B8A6"
+    },
+    "gradients": {
+      "cortex": { "from": "#6C4CF1", "to": "#22D3EE", "angle": 135 },
+      "revenue": { "from": "#F59E0B", "to": "#14B8A6", "angle": 135 },
+      "neuralGlow": { "color": "#22D3EE", "opacity": 0.4, "type": "radial" },
+      "villageDusk": { "from": "#0B0B14", "to": "#1E1B4B", "angle": 180 }
+    },
+    "agentState": {
+      "working": "#F59E0B",
+      "idle": "#34D399",
+      "meeting": "#3B82F6",
+      "blocked": "#FB7185",
+      "sleeping": "#64748B",
+      "trading": "#14B8A6",
+      "earning": "gradient:revenue"
+    }
+  }
+}

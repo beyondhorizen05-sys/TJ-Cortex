@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="TJ-Cortex app icon">
+  <defs>
+    <linearGradient id="aibg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0B0B14"/><stop offset="1" stop-color="#1E1B4B"/>
+    </linearGradient>
+    <linearGradient id="aig" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6C4CF1"/><stop offset="1" stop-color="#22D3EE"/>
+    </linearGradient>
+    <linearGradient id="air" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F59E0B"/><stop offset="1" stop-color="#14B8A6"/>
+    </linearGradient>
+    <radialGradient id="aigl" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#22D3EE" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#22D3EE" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1024" height="1024" rx="224" fill="url(#aibg)"/>
+  <rect width="1024" height="1024" rx="224" fill="url(#aigl)"/>
+  <g transform="translate(160,160)">
+    <path d="M100 340c0-120 108-216 252-216s252 96 252 216c0 54-18 100-54 132 8 32 0 76-32 100-16 14-40 22-70 22-24 44-70 68-124 52-40 44-100 44-140 8-40-36-46-92-26-140-46-40-58-104-58-174z"
+          fill="none" stroke="url(#aig)" stroke-width="22" stroke-linejoin="round"/>
+    <circle cx="206" cy="298" r="20" fill="#22D3EE"/><circle cx="346" cy="222" r="20" fill="#6C4CF1"/>
+    <circle cx="486" cy="298" r="20" fill="#22D3EE"/><circle cx="178" cy="450" r="20" fill="#6C4CF1"/>
+    <circle cx="346" cy="490" r="20" fill="#22D3EE"/><circle cx="512" cy="450" r="20" fill="#6C4CF1"/>
+    <path d="M206 298 L346 222 L486 298 M178 450 L206 298 M346 222 L346 490 M486 298 L512 450 M346 490 L178 450 M346 490 L512 450"
+          stroke="#22D3EE" stroke-opacity="0.5" stroke-width="9" fill="none"/>
+    <g transform="translate(292,340)">
+      <path d="M0 70 L54 8 L108 70 L108 152 L0 152 Z" fill="#0B0B14" stroke="#F8FAFC" stroke-width="12"/>
+      <rect x="40" y="88" width="30" height="64" fill="#F59E0B"/>
+    </g>
+    <g transform="translate(430,160)">
+      <circle cx="48" cy="48" r="48" fill="url(#air)"/>
+      <path d="M48 20v56M24 40h48M24 56h48" stroke="#0B0B14" stroke-width="8" stroke-linecap="round"/>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,8 @@
+packages:
+  - "shared"
+  - "providers"
+  - "sidecar"
+  - "ui"
+  - "village"
+  - "economy"
+  - "desktop"

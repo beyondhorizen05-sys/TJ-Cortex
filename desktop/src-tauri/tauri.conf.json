@@ -1,0 +1,65 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "TJ-Cortex",
+  "version": "0.1.0",
+  "identifier": "app.tj-cortex.desktop",
+  "build": {
+    "beforeDevCommand": "pnpm --filter @tj-cortex/sidecar run dev",
+    "beforeBuildCommand": "pnpm --filter @tj-cortex/sidecar run build && pnpm --filter @tj-cortex/ui run build",
+    "devUrl": "http://127.0.0.1:47822",
+    "frontendDist": "../../ui/dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "TJ-Cortex",
+        "width": 1440,
+        "height": 900,
+        "minWidth": 1024,
+        "minHeight": 640,
+        "resizable": true,
+        "fullscreen": false,
+        "decorations": true,
+        "transparent": false,
+        "theme": "Dark",
+        "titleBarStyle": "Visible"
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self' tauri: asset: https://asset.localhost; img-src 'self' asset: https://asset.localhost data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' 'wasm-unsafe-eval'; connect-src 'self' ipc: http://ipc.localhost http://127.0.0.1:47821 ws://127.0.0.1:47821 https://generativelanguage.googleapis.com https://api.deepseek.com https://api.openai.com https://api.anthropic.com https://openrouter.ai https://accounts.google.com https://oauth2.googleapis.com; font-src 'self' data:;"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["msi", "nsis", "deb", "appimage"],
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "resources": [],
+    "copyright": "Copyright 2025 TJ-Cortex Contributors. Apache-2.0.",
+    "category": "Productivity",
+    "shortDescription": "Local-first AI agent runtime with a living 3D village.",
+    "longDescription": "TJ-Cortex is a local-first AI agent runtime with a living 3D village and a self-running agent economy. Think. Connect. Build. Earn.",
+    "windows": {
+      "wix": {
+        "language": ["en-US"]
+      },
+      "nsis": {
+        "installMode": "perMachine",
+        "languages": ["English"]
+      }
+    },
+    "linux": {
+      "deb": {
+        "depends": ["libwebkit2gtk-4.1-0", "libgtk-3-0", "libayatana-appindicator3-1"]
+      },
+      "appimage": {
+        "bundleMediaFramework": false
+      }
+    }
+  }
+}

@@ -1,0 +1,27 @@
+[package]
+name = "tj-cortex-desktop"
+version = "0.1.0"
+description = "TJ-Cortex — Think. Connect. Build. Earn."
+authors = ["TJ-Cortex Contributors"]
+license = "Apache-2.0"
+edition = "2021"
+rust-version = "1.78"
+
+[lib]
+name = "tj_cortex_desktop_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2.0.0", features = [] }
+
+[dependencies]
+tauri = { version = "2.0.0", features = ["tray-icon"] }
+tauri-plugin-shell = "2.0.0"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "process", "io-util", "time"] }
+which = "6"
+
+[features]
+default = ["custom-protocol"]
+custom-protocol = ["tauri/custom-protocol"]

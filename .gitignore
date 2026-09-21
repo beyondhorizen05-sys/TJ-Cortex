@@ -1,0 +1,44 @@
+# deps
+node_modules/
+.pnpm-store/
+
+# builds
+dist/
+build/
+target/
+out/
+*.tsbuildinfo
+
+# env / secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# databases
+*.sqlite
+*.sqlite3
+*.db
+
+# local data
+.tj-cortex/
+outbox/
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.swp
+
+# Tauri
+src-tauri/target/
+
+# misc
+*.log
+coverage/

@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 120" role="img" aria-label="TJ-Cortex animated">
+  <defs>
+    <linearGradient id="ag" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6C4CF1"/><stop offset="1" stop-color="#22D3EE"/>
+    </linearGradient>
+    <linearGradient id="ar" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F59E0B"/><stop offset="1" stop-color="#14B8A6"/>
+    </linearGradient>
+  </defs>
+  <g transform="translate(10,10)">
+    <path d="M22 44c0-14 12-24 28-24s28 10 28 24c0 6-2 11-6 15 1 4 0 9-3 12-2 2-5 3-8 3-2 5-8 8-14 6-4 5-11 5-15 1-4-4-5-10-3-15-5-5-7-12-7-22z"
+          fill="none" stroke="url(#ag)" stroke-width="3" stroke-linejoin="round"/>
+    <!-- Animated pulses along neural paths -->
+    <path id="p1" d="M34 40 L50 32 L66 40" fill="none" stroke="none"/>
+    <path id="p2" d="M30 58 L50 62 L70 58" fill="none" stroke="none"/>
+    <circle r="2.6" fill="#22D3EE">
+      <animateMotion dur="2.4s" repeatCount="indefinite" path="M34 40 L50 32 L66 40"/>
+    </circle>
+    <circle r="2.6" fill="#6C4CF1">
+      <animateMotion dur="3.2s" repeatCount="indefinite" path="M70 58 L50 62 L30 58"/>
+    </circle>
+    <!-- Revenue pathway glow (Axon Amber) -->
+    <circle r="3" fill="#F59E0B">
+      <animateMotion dur="2.8s" repeatCount="indefinite" path="M50 32 L50 62"/>
+      <animate attributeName="opacity" values="0.3;1;0.3" dur="2.8s" repeatCount="indefinite"/>
+    </circle>
+    <g transform="translate(43,46)"><path d="M0 8 L7 2 L14 8 L14 16 L0 16 Z" fill="#0B0B14" stroke="#F8FAFC" stroke-width="1.4"/>
+      <rect x="5" y="10" width="4" height="6" fill="#F59E0B"/></g>
+    <g transform="translate(60,26)"><circle cx="6" cy="6" r="6" fill="url(#ar)"/>
+      <path d="M6 3v6M4 5h4M4 7h4" stroke="#0B0B14" stroke-width="1.1" stroke-linecap="round"/></g>
+  </g>
+  <text x="120" y="72" font-family="'Space Grotesk', Inter, sans-serif" font-weight="700" font-size="44"
+        letter-spacing="1" fill="#F8FAFC">TJ<tspan fill="#22D3EE">-</tspan>CORTEX</text>
+</svg>

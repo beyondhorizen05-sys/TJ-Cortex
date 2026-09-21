@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="TJ-Cortex OG image">
+  <defs>
+    <linearGradient id="ogbg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0B0B14"/><stop offset="1" stop-color="#1E1B4B"/>
+    </linearGradient>
+    <linearGradient id="ogc" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6C4CF1"/><stop offset="1" stop-color="#22D3EE"/>
+    </linearGradient>
+    <radialGradient id="ogg" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#22D3EE" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#22D3EE" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#ogbg)"/>
+  <circle cx="960" cy="315" r="280" fill="url(#ogg)"/>
+  <g transform="translate(80,120)">
+    <text font-family="'Space Grotesk', Inter, sans-serif" font-weight="700" font-size="96" fill="#F8FAFC">TJ<tspan fill="#22D3EE">-</tspan>CORTEX</text>
+    <text y="60" font-family="Inter, sans-serif" font-size="26" fill="#22D3EE" letter-spacing="6">THINK · CONNECT · BUILD · EARN</text>
+    <text y="140" font-family="Inter, sans-serif" font-size="22" fill="#64748B">Local-first AI agent runtime · 3D village · self-running economy</text>
+    <text y="180" font-family="Inter, sans-serif" font-size="22" fill="#64748B">Your agents. Your village. Your economy. Your rules.</text>
+  </g>
+  <g transform="translate(880,200)">
+    <circle cx="120" cy="120" r="120" fill="none" stroke="url(#ogc)" stroke-width="6"/>
+    <circle cx="80" cy="100" r="5" fill="#22D3EE"/><circle cx="120" cy="70" r="5" fill="#6C4CF1"/>
+    <circle cx="170" cy="100" r="5" fill="#22D3EE"/><circle cx="70" cy="150" r="5" fill="#6C4CF1"/>
+    <circle cx="120" cy="170" r="5" fill="#22D3EE"/><circle cx="180" cy="150" r="5" fill="#6C4CF1"/>
+  </g>
+</svg>

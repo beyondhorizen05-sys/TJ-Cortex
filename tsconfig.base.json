@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": false,
+    "jsx": "react-jsx",
+    "baseUrl": ".",
+    "paths": {
+      "@tj-cortex/shared": ["shared/src/index.ts"],
+      "@tj-cortex/shared/*": ["shared/src/*"],
+      "@tj-cortex/providers": ["providers/src/index.ts"],
+      "@tj-cortex/providers/*": ["providers/src/*"],
+      "@tj-cortex/economy": ["economy/src/index.ts"],
+      "@tj-cortex/economy/*": ["economy/src/*"]
+    }
+  },
+  "exclude": ["node_modules", "dist", "build", "target"]
+}

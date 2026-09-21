@@ -1,0 +1,28 @@
+{
+  "name": "tj-cortex",
+  "version": "0.1.0",
+  "private": true,
+  "description": "TJ-Cortex — Think. Connect. Build. Earn. A local-first AI agent runtime with a living 3D village and a self-running agent economy.",
+  "license": "Apache-2.0",
+  "packageManager": "pnpm@9.12.0",
+  "engines": {
+    "node": ">=22.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "scripts": {
+    "dev": "pnpm -r --parallel --filter ./sidecar --filter ./ui run dev",
+    "build": "pnpm -r run build",
+    "typecheck": "pnpm -r run typecheck",
+    "lint": "pnpm -r run lint",
+    "test": "pnpm -r run test",
+    "clean": "pnpm -r run clean && rimraf node_modules",
+    "tauri:dev": "pnpm --filter ./desktop tauri dev",
+    "tauri:build": "pnpm --filter ./desktop tauri build",
+    "zip": "node scripts/make-zip.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.4",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.6.3"
+  }
+}
