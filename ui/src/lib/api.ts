@@ -2,7 +2,7 @@ import { SIDECAR_DEFAULT_HOST, SIDECAR_DEFAULT_PORT } from '@tj-cortex/shared';
 import type {
   Agent, Conversation, TranscriptMessage, ProviderStatus, ModelInfo,
   PermissionRequest, ToolDescriptor, Recipe, Skill, McpServerConfig,
-  LedgerEntry, Wallet, Contract, Bounty, Guild, Reputation, OutboxItem,
+  LedgerEntry, Wallet, Contract, Bounty, Guild, Reputation, OutboxItem, CeoProfile,
 } from '@tj-cortex/shared';
 
 const BASE = (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
@@ -27,6 +27,8 @@ export const api = {
   createAgent: (input: Partial<Agent> & { name: string }) => http<Agent>('/agents', { method: 'POST', body: JSON.stringify(input) }),
   updateAgent: (id: string, patch: Partial<Agent>) => http<Agent>('/agents/' + id, { method: 'PATCH', body: JSON.stringify(patch) }),
   deleteAgent: (id: string) => http<{ ok: true }>('/agents/' + id, { method: 'DELETE' }),
+  getCeoProfile: () => http<CeoProfile>('/ceo'),
+  setupCeo: (name: string) => http<CeoProfile>('/ceo/setup', { method: 'POST', body: JSON.stringify({ name }) }),
   listConversations: () => http<Conversation[]>('/conversations'),
   getConversation: (id: string) => http<Conversation & { messages: TranscriptMessage[] }>('/conversations/' + id),
   runTurn: (body: { agentId: string; conversationId?: string; input: string }) => http<{ conversationId: string; text: string; reasoning?: string }>('/run', { method: 'POST', body: JSON.stringify(body) }),
@@ -41,7 +43,7 @@ export const api = {
   googleSignOut: () => http<{ ok: true }>('/auth/google/signout', { method: 'POST' }),
   googleSetClient: (clientId: string, clientSecret?: string) => http<{ ok: true }>('/auth/google/client', { method: 'POST', body: JSON.stringify({ clientId, clientSecret }) }),
   listPolicies: () => http<any[]>('/permissions/policies'),
-  resolvePermission: (id: string, decision: 'allow_once' | 'allow_always' | 'deny') => http<{ ok: true }>('/permissions/resolve', { method: 'POST', body: JSON.stringify({ id, decision }) }),
+  resolvePermission: (id: string, decision: 'allow_once' | 'allow_always' | 'deny') => http<{ ok: true }>('/permissions/resolve', { method: 'POST', body: JSON.stringify({ id, decision })),
   listTools: () => http<ToolDescriptor[]>('/tools'),
   invokeTool: (agentId: string, toolName: string, args: Record<string, unknown>) => http<any>('/tools/invoke', { method: 'POST', body: JSON.stringify({ agentId, toolName, args }) }),
   transcribeVoice: (agentId: string, audio: Blob) => blobToBase64(audio).then((audioBase64) => http<any>('/voice/transcribe', { method: 'POST', body: JSON.stringify({ agentId, audioBase64 }) })),
@@ -67,6 +69,7 @@ export const api = {
   getSettings: () => http<Record<string, unknown>>('/settings'),
   setSetting: (key: string, value: unknown) => http<{ ok: true }>('/settings/' + key, { method: 'PUT', body: JSON.stringify(value) }),
 };
+
 async function blobToBase64(blob: Blob): Promise<string> {
   const bytes = new Uint8Array(await blob.arrayBuffer());
   let binary = '';
