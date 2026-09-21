@@ -45,7 +45,7 @@ export class ProviderError extends Error {
       | 'unsupported'
       | 'cancelled'
       | 'unknown',
-    message: string,
+    public override message: string,
     public retryable = false,
     public cause?: unknown,
   ) {
