@@ -3,6 +3,7 @@ import { useUi } from '../store/ui';
 import { usePermissions } from '../store/permissions';
 import { onStatus } from '../lib/ws';
 import { cn } from '../lib/format';
+import { VoiceButton } from './VoiceButton';
 
 export function TopBar() {
   const connected = useUi((s) => s.connected);
@@ -25,6 +26,7 @@ export function TopBar() {
         </span>
       </div>
       <div className="flex items-center gap-4">
+        <VoiceButton />
         {pending > 0 && (
           <span className="state-chip" style={{ background: 'rgba(251,113,133,0.15)', color: '#FB7185' }}>
             {pending} permission{pending > 1 ? 's' : ''} waiting
