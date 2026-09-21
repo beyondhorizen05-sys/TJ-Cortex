@@ -32,6 +32,7 @@ export function OpenWorldPanel() {
   const [interactionLocked, setInteractionLocked] = useState(false);
   const keys = useRef(new Set<string>());
   const nearestRef = useRef<(typeof BUILDINGS)[number] | null>(null);
+  const nearestAgentRef = useRef<string | null>(null);
   const interactionLockRef = useRef(false);
   const playerRef = useRef(player);
   const selected = agents.find((a) => a.id === selectedId);
@@ -57,7 +58,30 @@ export function OpenWorldPanel() {
   useEffect(() => {
     nearestRef.current = nearest;
     setNearby(nearest?.id ?? null);
-  }, []);
+  }, [agents, select, setPanel]);
+
+  const getAgentPosition = (index: number): Vec2 => ({
+    x: 27 + (index % 4) * 7,
+    y: 29 + Math.floor(index / 4) * 8,
+  });
+
+  const nearestAgent = useMemo(() => {
+    let bestId: string | null = null;
+    let distance = Infinity;
+    agents.slice(0, 12).forEach((agent, index) => {
+      const pos = getAgentPosition(index);
+      const d = Math.hypot(pos.x - player.x, pos.y - player.y);
+      if (d < distance) {
+        distance = d;
+        bestId = agent.id;
+      }
+    });
+    return distance < 8 ? bestId : null;
+  }, [agents, player]);
+
+  useEffect(() => {
+    nearestAgentRef.current = nearestAgent;
+  }, [nearestAgent]);
 
   const openBuilding = (building: (typeof BUILDINGS)[number]) => {
     if (interactionLockRef.current) return;
@@ -88,9 +112,18 @@ export function OpenWorldPanel() {
     const interact = (event: KeyboardEvent) => {
       if (event.key.toLowerCase() !== 'e') return;
       const building = nearestRef.current;
-      if (!building || interactionLockRef.current) return;
+      if (building && !interactionLockRef.current) {
+        event.preventDefault();
+        openBuilding(building);
+        return;
+      }
+      const agentId = nearestAgentRef.current;
+      if (!agentId || interactionLockRef.current) return;
       event.preventDefault();
-      openBuilding(building);
+      select(agentId);
+      setPanel('agents');
+      const agent = agents.find((item) => item.id === agentId);
+      setNotice(`${agent?.name ?? 'Agent'} — runtime profile opened`);
     };
 
     window.addEventListener('keydown', down);
@@ -183,7 +216,8 @@ export function OpenWorldPanel() {
                 style={{ left: `${x}%`, top: `${y}%` }}
                 onClick={() => {
                   select(agent.id);
-                  setNotice(`${agent.name} · ${String(agent.state ?? 'unknown')}`);
+                  setPanel('agents');
+                  setNotice(`${agent.name} · ${String(agent.state ?? 'unknown')} · runtime profile opened`);
                 }}
                 title={agent.name}
               >
@@ -212,8 +246,8 @@ export function OpenWorldPanel() {
         </div>
         <div>
           <span className="open-world__panel-label">NEARBY</span>
-          <strong>{nearest?.name ?? 'Open road'}</strong>
-          <small>{nearest ? 'Press E to interact' : 'Explore the city'}</small>
+          <strong>{nearest?.name ?? (nearestAgent ? agents.find((a) => a.id === nearestAgent)?.name ?? 'Agent' : 'Open road')}</strong>
+          <small>{nearest ? 'Press E to interact' : nearestAgent ? 'Press E to open agent runtime' : 'Explore the city'}</small>
         </div>
       </aside>
       {interactionLocked && (
