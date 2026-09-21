@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import {
   Users, MessageSquare, Cpu, BookOpen, Wrench, Plug, Package, ScrollText,
-  FileSignature, Trophy, Castle, Wallet, Star, DollarSign, Settings, Map,
+  FileSignature, Trophy, Castle, Wallet, Star, DollarSign, Settings, Map, Globe2,
 } from 'lucide-react';
 import { useUi, type PanelId } from '../store/ui';
 import { cn } from '../lib/format';
@@ -13,6 +13,7 @@ const NAV: { group: string; items: NavItem[] }[] = [
     { id: 'agents', label: 'Agents', icon: Users },
     { id: 'transcript', label: 'Transcript', icon: MessageSquare },
     { id: 'village', label: 'The Cortex Village', icon: Map },
+    { id: 'openWorld', label: 'Open World', icon: Globe2 },
   ]},
   { group: 'Runtime', items: [
     { id: 'providers', label: 'Providers', icon: Cpu },
