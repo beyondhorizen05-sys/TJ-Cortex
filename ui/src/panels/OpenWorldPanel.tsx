@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useAgents } from '../store/agents';
 
 type Vec2 = { x: number; y: number };
@@ -19,6 +19,8 @@ export function OpenWorldPanel() {
   const [player, setPlayer] = useState<Vec2>({ x: 50, y: 52 });
   const [nearby, setNearby] = useState<string | null>(null);
   const [notice, setNotice] = useState('WASD / Arrow Keys to move · E to interact');
+  const [camera, setCamera] = useState<Vec2>(player);
+  const keys = useRef(new Set<string>());
   const selected = agents.find((a) => a.id === selectedId);
 
   const nearest = useMemo(() => {
@@ -39,6 +41,47 @@ export function OpenWorldPanel() {
   }, [nearest]);
 
   useEffect(() => {
+    const down = (event: KeyboardEvent) => {
+      const key = event.key.toLowerCase();
+      if (['w', 'a', 's', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright'].includes(key)) keys.current.add(key);
+    };
+    const up = (event: KeyboardEvent) => keys.current.delete(event.key.toLowerCase());
+    window.addEventListener('keydown', down);
+    window.addEventListener('keyup', up);
+    let frame = 0;
+    let last = performance.now();
+    const tick = (now: number) => {
+      const dt = Math.min(32, now - last) / 16.67;
+      last = now;
+      const held = keys.current;
+      if (held.size) {
+        const speed = held.has('shift') ? 0 : 0;
+        void speed;
+        const step = 0.72 * dt;
+        setPlayer((p) => ({
+          x: Math.max(7, Math.min(93, p.x + ((held.has('a') || held.has('arrowleft') ? -1 : 0) + (held.has('d') || held.has('arrowright') ? 1 : 0)) * step)),
+          y: Math.max(8, Math.min(92, p.y + ((held.has('w') || held.has('arrowup') ? -1 : 0) + (held.has('s') || held.has('arrowdown') ? 1 : 0)) * step)),
+        }));
+      }
+      frame = requestAnimationFrame(tick);
+    };
+    frame = requestAnimationFrame(tick);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener('keydown', down);
+      window.removeEventListener('keyup', up);
+    };
+  }, []);
+
+  useEffect(() => {
+    const smooth = () => {
+      setCamera((c) => ({ x: c.x + (player.x - c.x) * 0.14, y: c.y + (player.y - c.y) * 0.14 }));
+    };
+    const frame = requestAnimationFrame(smooth);
+    return () => cancelAnimationFrame(frame);
+  }, [player]);
+
+  useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       const key = event.key.toLowerCase();
       if (!['w', 'a', 's', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright', 'e'].includes(key)) return;
@@ -49,11 +92,7 @@ export function OpenWorldPanel() {
         return;
       }
 
-      const step = event.shiftKey ? 2.2 : 1.2;
-      setPlayer((p) => ({
-        x: Math.max(7, Math.min(93, p.x + (key === 'a' || key === 'arrowleft' ? -step : key === 'd' || key === 'arrowright' ? step : 0))),
-        y: Math.max(8, Math.min(92, p.y + (key === 'w' || key === 'arrowup' ? -step : key === 's' || key === 'arrowdown' ? step : 0))),
-      }));
+      // Continuous movement is handled by the game-loop listener above.
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
@@ -61,6 +100,7 @@ export function OpenWorldPanel() {
 
   return (
     <section className="open-world">
+      <div className="open-world__camera-readout">CAM <b>{camera.x.toFixed(0)} / {camera.y.toFixed(0)}</b></div>
       <div className="open-world__hud">
         <div>
           <p className="open-world__eyebrow">TJ-CORTEX // OPEN WORLD</p>
@@ -75,7 +115,7 @@ export function OpenWorldPanel() {
       </div>
 
       <div className="open-world__viewport" aria-label="TJ-Cortex open world">
-        <div className="open-world__world">
+        <div className="open-world__world" style={{ transform: `rotateX(55deg) scale(1.18) translate(${50 - camera.x}%, ${52 - camera.y}%)` }}>
           <div className="open-world__road open-world__road--h" />
           <div className="open-world__road open-world__road--v" />
           <div className="open-world__road open-world__road--diag" />
