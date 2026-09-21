@@ -354,3 +354,29 @@
 .open-world__agent--operations .open-world__agent-body { background:linear-gradient(145deg,#94a3b8,#334155); }
 .open-world__agent--engineer .open-world__agent-head { box-shadow:0 0 0 2px #f59e0b; }
 .open-world__agent--creative .open-world__agent-head { box-shadow:0 0 0 2px #f472b6; }
+
+
+/* Persistent AI crew character layer */
+.open-world__agent-model {
+  display:block;
+  width:62px;
+  height:78px;
+  background:transparent;
+  --poster-color:transparent;
+  pointer-events:none;
+}
+.open-world__agent-model::part(default-progress-bar) { display:none; }
+.open-world__agent--idle .open-world__agent-model { animation: crewIdleFloat 2.6s ease-in-out infinite; }
+.open-world__agent--walk .open-world__agent-model { animation: crewWalkBob .52s ease-in-out infinite; }
+.open-world__agent--work .open-world__agent-model { animation: crewWorkPulse 1.8s ease-in-out infinite; }
+.open-world__agent--meeting .open-world__agent-model { animation: crewMeetingPulse 1.4s ease-in-out infinite; }
+.open-world__agent--speaking .open-world__agent-model { animation: crewSpeakPulse .72s ease-in-out infinite; }
+.open-world__agent--offline { opacity:.48; filter:grayscale(.75); }
+.open-world__agent--offline .open-world__agent-model { filter:grayscale(.9); }
+.open-world__agent--walk .open-world__agent-label::before { content:'● '; color:#67e8f9; }
+.open-world__agent.is-selected .open-world__agent-model { filter:drop-shadow(0 0 12px rgba(103,232,249,.55)); }
+@keyframes crewIdleFloat { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-2px); } }
+@keyframes crewWalkBob { 0%,100% { transform:translateY(0) rotateZ(-1deg); } 50% { transform:translateY(-3px) rotateZ(1deg); } }
+@keyframes crewWorkPulse { 0%,100% { transform:translateY(0) scale(1); } 50% { transform:translateY(-2px) scale(1.02); } }
+@keyframes crewMeetingPulse { 0%,100% { transform:scale(1); } 50% { transform:scale(1.035); } }
+@keyframes crewSpeakPulse { 0%,100% { transform:translateY(0) scaleY(1); } 50% { transform:translateY(-2px) scaleY(1.025); } }
