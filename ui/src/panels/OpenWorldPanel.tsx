@@ -41,9 +41,15 @@ export function OpenWorldPanel() {
   const ceoWorldPositionRef = useRef<Vec2>({ x: 50, y: 52 });
   const ceoWaypointRef = useRef(0);
   const ceoFacingRef = useRef<'left' | 'right'>('right');
-  const ceoWaypoints: Vec2[] = useMemo(() => [
-    { x: 50, y: 52 }, { x: 61, y: 52 }, { x: 61, y: 61 }, { x: 50, y: 61 },
+  const ceoSchedule = useMemo(() => [
+    { name: 'HQ Operations', target: { x: 18, y: 18 }, duration: 18000 },
+    { name: 'Guild Review', target: { x: 64, y: 15 }, duration: 14000 },
+    { name: 'Executive Work', target: { x: 50, y: 52 }, duration: 18000 },
+    { name: 'Meeting Center', target: { x: 43, y: 38 }, duration: 16000 },
+    { name: 'OUTBOX Review', target: { x: 54, y: 70 }, duration: 14000 },
   ], []);
+  const ceoScheduleRef = useRef({ index: 0, elapsed: 0 });
+  const [ceoActivity, setCeoActivity] = useState('HQ Operations');
   const [interactionLocked, setInteractionLocked] = useState(false);
   const keys = useRef(new Set<string>());
   const nearestRef = useRef<(typeof BUILDINGS)[number] | null>(null);
@@ -207,18 +213,28 @@ export function OpenWorldPanel() {
       if (ceoAgent) {
         const current = ceoWorldPositionRef.current;
         const runtimeState = String(ceoAgent.state ?? 'idle').toLowerCase();
+        const schedule = ceoSchedule[ceoScheduleRef.current.index];
+        if (!ceoConsoleOpen && !ceoSpeaking && !runtimeState.includes('offline')) {
+          ceoScheduleRef.current.elapsed += now - (now - Math.min(32, (now - last) * 16.67));
+          if (ceoScheduleRef.current.elapsed >= schedule.duration) {
+            ceoScheduleRef.current.index = (ceoScheduleRef.current.index + 1) % ceoSchedule.length;
+            ceoScheduleRef.current.elapsed = 0;
+          }
+          setCeoActivity(ceoSchedule[ceoScheduleRef.current.index].name);
+        }
+        const activeSchedule = ceoSchedule[ceoScheduleRef.current.index];
         const target = ceoConsoleOpen || ceoSpeaking
           ? current
           : runtimeState.includes('meeting')
             ? { x: 43, y: 38 }
             : runtimeState.includes('work')
               ? { x: 50, y: 52 }
-              : ceoWaypoints[ceoWaypointRef.current];
+              : activeSchedule.target;
         const dx = target.x - current.x;
         const dy = target.y - current.y;
         const distance = Math.hypot(dx, dy);
         if (distance < 1.2 && !ceoConsoleOpen && !ceoSpeaking && !runtimeState.includes('meeting') && !runtimeState.includes('work')) {
-          ceoWaypointRef.current = (ceoWaypointRef.current + 1) % ceoWaypoints.length;
+          setCeoWalking(false);
         }
         const speed = runtimeState.includes('offline') ? 0 : 0.16;
         if (distance > 0.2 && speed > 0) {
@@ -269,7 +285,7 @@ export function OpenWorldPanel() {
           <p className="open-world__eyebrow">TJ-CORTEX // OPEN WORLD</p>
           <h1>Living Agent City</h1>
           <p className="open-world__notice">{notice}</p>
-          <p className="open-world__ceo-badge">{ceoAgent ? `CEO AGENT · ${ceoAgent.name}` : "CEO CHARACTER · READY FOR IDENTITY"}</p>
+          <p className="open-world__ceo-badge">{ceoAgent ? `CEO AGENT · ${ceoAgent.name} · ${ceoActivity}` : "CEO CHARACTER · READY FOR IDENTITY"}</p>
         </div>
         <div className="open-world__status">
           <span className="open-world__dot" />
@@ -354,7 +370,7 @@ export function OpenWorldPanel() {
             <span className="open-world__ceo-avatar-silhouette" />
           </div>
           <strong>{ceoAgent?.name ?? 'Identity pending'}</strong>
-          <small>{ceoAgent ? 'Main AI · Executive control' : 'Startup will request her name'}</small>
+          <small>{ceoAgent ? `Main AI · Executive control · ${ceoActivity}` : 'Startup will request her name'}</small>
         </div>
         <div>
           <span className="open-world__panel-label">PLAYER</span>
