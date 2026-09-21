@@ -37,6 +37,13 @@ export function OpenWorldPanel() {
   const [ceoConsoleOpen, setCeoConsoleOpen] = useState(false);
   const [ceoWalking, setCeoWalking] = useState(false);
   const [ceoSpeaking, setCeoSpeaking] = useState(false);
+  const [ceoWorldPosition, setCeoWorldPosition] = useState<Vec2>({ x: 50, y: 52 });
+  const ceoWorldPositionRef = useRef<Vec2>({ x: 50, y: 52 });
+  const ceoWaypointRef = useRef(0);
+  const ceoFacingRef = useRef<'left' | 'right'>('right');
+  const ceoWaypoints: Vec2[] = useMemo(() => [
+    { x: 50, y: 52 }, { x: 61, y: 52 }, { x: 61, y: 61 }, { x: 50, y: 61 },
+  ], []);
   const [interactionLocked, setInteractionLocked] = useState(false);
   const keys = useRef(new Set<string>());
   const nearestRef = useRef<(typeof BUILDINGS)[number] | null>(null);
@@ -197,7 +204,33 @@ export function OpenWorldPanel() {
         setAgentWorldPositions(nextAgentPositions);
       }
 
-      setCeoWalking(moving && Boolean(ceoAgent));
+      if (ceoAgent) {
+        const current = ceoWorldPositionRef.current;
+        const runtimeState = String(ceoAgent.state ?? 'idle').toLowerCase();
+        const target = ceoConsoleOpen || ceoSpeaking
+          ? current
+          : runtimeState.includes('meeting')
+            ? { x: 43, y: 38 }
+            : runtimeState.includes('work')
+              ? { x: 50, y: 52 }
+              : ceoWaypoints[ceoWaypointRef.current];
+        const dx = target.x - current.x;
+        const dy = target.y - current.y;
+        const distance = Math.hypot(dx, dy);
+        if (distance < 1.2 && !ceoConsoleOpen && !ceoSpeaking && !runtimeState.includes('meeting') && !runtimeState.includes('work')) {
+          ceoWaypointRef.current = (ceoWaypointRef.current + 1) % ceoWaypoints.length;
+        }
+        const speed = runtimeState.includes('offline') ? 0 : 0.16;
+        if (distance > 0.2 && speed > 0) {
+          const next = { x: current.x + (dx / distance) * speed * dt, y: current.y + (dy / distance) * speed * dt };
+          ceoWorldPositionRef.current = next;
+          setCeoWorldPosition(next);
+          ceoFacingRef.current = dx < -0.05 ? 'left' : dx > 0.05 ? 'right' : ceoFacingRef.current;
+        }
+        setCeoWalking(distance > 1.2 && !ceoConsoleOpen && !ceoSpeaking);
+      } else {
+        setCeoWalking(false);
+      }
 
       if (moving) {
         setPlayer((current) => {
@@ -270,8 +303,9 @@ export function OpenWorldPanel() {
               state={ceoConsoleOpen ? 'command' : ceoWalking ? 'walking' : String(ceoAgent.state ?? 'idle')}
               isCommandOpen={ceoConsoleOpen}
               isSpeaking={ceoSpeaking}
-              x={agentWorldPositions[ceoAgent.id]?.x ?? 50}
-              y={agentWorldPositions[ceoAgent.id]?.y ?? 52}
+              x={ceoWorldPosition.x}
+              y={ceoWorldPosition.y}
+              facing={ceoFacingRef.current}
               selected={ceoAgent.id === selectedId}
               onClick={() => {
                 select(ceoAgent.id);
@@ -283,7 +317,7 @@ export function OpenWorldPanel() {
             />
           )}
 
-          {agents.slice(0, 12).map((agent, index) => {
+          {agents.slice(0, 12).filter((agent) => agent.id !== ceoAgent?.id).map((agent, index) => {
             const active = agent.id === selectedId;
             const position = agentWorldPositions[agent.id] ?? getAgentHome(index);
             const x = position.x;
