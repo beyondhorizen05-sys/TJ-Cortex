@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
-import { VillageMount } from '@tj-cortex/village/mount';
+import { VillageMount } from '../../../village/src/VillageMount';
 import { useAgents } from '../store/agents';
 import { useVillage } from '@tj-cortex/village';
-import { useVillageEconomy } from '@tj-cortex/village/state/economyStore';
+import { useVillageEconomy } from '../../../village/src/state/economyStore';
 import { useEconomy } from '../store/economy';
 import { on } from '../lib/ws';
 
