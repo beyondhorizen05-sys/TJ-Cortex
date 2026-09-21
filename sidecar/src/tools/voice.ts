@@ -21,7 +21,7 @@ export async function transcribeWav(audioPath:string,runner:WhisperRunner=runWhi
  const tempDir=await mkdtemp(join(tmpdir(),'tj-cortex-whisper-')),outputBase=join(tempDir,'transcript');
  try{await runner(executable,['--model',resolve(model),'--file',inputPath,'--output-txt','--output-file',outputBase,'--no-timestamps','--no-prints'],dirname(inputPath));return{text:(await readFile(outputBase+'.txt','utf8')).trim(),model:resolve(model)}}finally{await rm(tempDir,{recursive:true,force:true})}
 }
-export function runPiperCli(executable:string,args:string,input:string,cwd?:string){return runProcess(executable,args,input,cwd)}
+export function runPiperCli(executable:string,args:string[],input:string,cwd?:string){return runProcess(executable,args,input,cwd)}
 export async function synthesizeSpeech(text:string,outputPath:string,runner:PiperRunner=runPiperCli,settings:{executable?:string;model?:string}={}):Promise<{audioPath:string;model:string}>{
  const normalizedText=text.trim();if(!normalizedText)throw new Error('voice.speak requires non-empty text.');
  const targetPath=resolve(outputPath);if(!targetPath.toLowerCase().endsWith('.wav'))throw new Error('voice.speak currently outputs WAV audio only.');
