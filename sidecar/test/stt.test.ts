@@ -21,7 +21,7 @@ test('transcribeWav returns the transcript produced by the whisper runner', asyn
   process.env.TJ_CORTEX_WHISPER_CLI = 'test-whisper';
   process.env.TJ_CORTEX_WHISPER_MODEL = 'models/ggml-base.en.bin';
   try {
-    const result = await transcribeWav(wav, runner);
+    const result = await transcribeWav(wav, runner, { executable: 'test-whisper', model: 'models/ggml-base.en.bin' });
     assert.equal(result.text, 'hello from local speech');
     assert.ok(result.model.endsWith(join('models', 'ggml-base.en.bin')));
   } finally {
