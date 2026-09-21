@@ -7,9 +7,10 @@ interface Props {
   agents: Agent[];
   onClose: () => void;
   onNotice: (message: string) => void;
+  onSpeakingChange?: (speaking: boolean) => void;
 }
 
-export function CeoExecutiveConsole({ ceo, agents, onClose, onNotice }: Props) {
+export function CeoExecutiveConsole({ ceo, agents, onClose, onNotice, onSpeakingChange }: Props) {
   const [targetId, setTargetId] = useState('');
   const [command, setCommand] = useState('');
   const [running, setRunning] = useState(false);
@@ -23,6 +24,7 @@ export function CeoExecutiveConsole({ ceo, agents, onClose, onNotice }: Props) {
     if (!input || running) return;
     setRunning(true);
     setSpeaking(true);
+    onSpeakingChange?.(true);
     setResult('');
     try {
       const target = targets.find((agent) => agent.id === targetId);
@@ -38,6 +40,7 @@ export function CeoExecutiveConsole({ ceo, agents, onClose, onNotice }: Props) {
     } finally {
       setRunning(false);
       setSpeaking(false);
+      onSpeakingChange?.(false);
     }
   };
 
