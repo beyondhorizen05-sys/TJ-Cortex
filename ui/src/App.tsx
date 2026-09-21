@@ -9,6 +9,7 @@ export function App() {
   const [booted, setBooted] = useState(false);
   const [ceoReady, setCeoReady] = useState<boolean | null>(null);
   const [bootError, setBootError] = useState('');
+  const [ceoProbe, setCeoProbe] = useState(0);
   const theme = useUi((s) => s.theme);
 
   useEffect(() => {
@@ -38,7 +39,7 @@ export function App() {
     return () => {
       active = false;
     };
-  }, [booted]);
+  }, [booted, ceoProbe]);
 
   if (!booted || ceoReady === null) return <Splash />;
 
@@ -54,6 +55,7 @@ export function App() {
             onClick={() => {
               setBootError('');
               setCeoReady(null);
+              setCeoProbe((value) => value + 1);
             }}
           >
             Retry
