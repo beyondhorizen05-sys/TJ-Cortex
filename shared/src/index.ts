@@ -17,5 +17,6 @@ export * from './types/crewClass.js';
 export * from './types/skill.js';
 export * from './types/mcp.js';
 export * from './types/integration.js';
+export * from './types/ceo.js';
 
 export * from './schemas/index.js';
