@@ -10,7 +10,9 @@ export function resampleMonoPcm(input: Float32Array, inputRate: number, outputRa
     const left = Math.min(Math.floor(position), input.length - 1);
     const right = Math.min(left + 1, input.length - 1);
     const fraction = position - left;
-    output[i] = input[left] + (input[right] - input[left]) * fraction;
+    const leftSample = input[left] ?? 0;
+    const rightSample = input[right] ?? leftSample;
+    output[i] = leftSample + (rightSample - leftSample) * fraction;
   }
   return output;
 }
@@ -38,7 +40,7 @@ export function encodePcm16Wav(samples: Float32Array, sampleRate = 16000): Uint8
   view.setUint32(40, dataSize, true);
 
   for (let i = 0; i < samples.length; i += 1) {
-    const sample = Math.max(-1, Math.min(1, samples[i]));
+    const sample = Math.max(-1, Math.min(1, samples[i] ?? 0));
     const pcm = sample < 0 ? Math.round(sample * 0x8000) : Math.round(sample * 0x7fff);
     view.setInt16(44 + i * 2, pcm, true);
   }
