@@ -1,3 +1,9 @@
+import clsx, { type ClassValue } from 'clsx';
+
+export function cn(...inputs: ClassValue[]): string {
+  return clsx(inputs);
+}
+
 export function fmtCC(cc: number, opts?: { sign?: boolean }): string {
   const sign = opts?.sign && cc > 0 ? '+' : '';
   return `${sign}${cc.toFixed(2)} CC`;
