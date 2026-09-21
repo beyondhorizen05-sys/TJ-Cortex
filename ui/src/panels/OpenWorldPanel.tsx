@@ -218,16 +218,19 @@ export function OpenWorldPanel() {
       if (ceoAgent) {
         const current = ceoWorldPositionRef.current;
         const runtimeState = String(ceoAgent.state ?? 'idle').toLowerCase();
-        const schedule = ceoSchedule[ceoScheduleRef.current.index];
+        const schedule = ceoSchedule[ceoScheduleRef.current.index] ?? ceoSchedule[0];
+        if (!schedule) return;
         if (!ceoConsoleOpen && !ceoSpeaking && !runtimeState.includes('offline')) {
           ceoScheduleRef.current.elapsed += deltaMs;
           if (ceoScheduleRef.current.elapsed >= schedule.duration) {
             ceoScheduleRef.current.index = (ceoScheduleRef.current.index + 1) % ceoSchedule.length;
             ceoScheduleRef.current.elapsed = 0;
           }
-          setCeoActivity(ceoSchedule[ceoScheduleRef.current.index].name);
+          const currentSchedule = ceoSchedule[ceoScheduleRef.current.index] ?? ceoSchedule[0];
+          if (currentSchedule) setCeoActivity(currentSchedule.name);
         }
-        const activeSchedule = ceoSchedule[ceoScheduleRef.current.index];
+        const activeSchedule = ceoSchedule[ceoScheduleRef.current.index] ?? ceoSchedule[0];
+        if (!activeSchedule) return;
         const nearbyWorldAgent = agents.slice(0, 12).filter((a) => a.id !== ceoAgent.id).map((a, index) => ({
           agent: a,
           pos: nextAgentPositions[a.id] ?? getAgentHome(index),
