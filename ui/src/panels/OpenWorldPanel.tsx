@@ -3,6 +3,8 @@ import { useAgents } from '../store/agents';
 import { CrewRecruitConsole } from '../components/CrewRecruitConsole';
 import { CeoCharacter } from '../components/CeoCharacter';
 import { CeoExecutiveConsole } from '../components/CeoExecutiveConsole';
+import { AgentCharacter } from '../components/AgentCharacter';
+import { resolveAgentArchetype } from '../data/agentCharacters';
 import { useUi, type PanelId } from '../store/ui';
 
 type Vec2 = { x: number; y: number };
@@ -354,36 +356,22 @@ export function OpenWorldPanel() {
           {agents.slice(0, 12).filter((agent) => agent.id !== ceoAgent?.id).map((agent, index) => {
             const active = agent.id === selectedId;
             const position = agentWorldPositions[agent.id] ?? getAgentHome(index);
-            const role = String(agent.role ?? 'agent').toLowerCase();
-            const archetype = role.includes('research') ? 'researcher'
-              : role.includes('engineer') || role.includes('dev') ? 'engineer'
-              : role.includes('sales') || role.includes('growth') ? 'sales'
-              : role.includes('design') || role.includes('creative') ? 'creative'
-              : role.includes('finance') || role.includes('account') ? 'finance'
-              : index % 5 === 0 ? 'strategist'
-              : index % 5 === 1 ? 'engineer'
-              : index % 5 === 2 ? 'researcher'
-              : index % 5 === 3 ? 'creative'
-              : 'operations';
+            const archetype = resolveAgentArchetype(agent.role, index);
             return (
-              <button
+              <AgentCharacter
                 key={agent.id}
-                className={`open-world__agent open-world__agent--${archetype} ${active ? 'is-selected' : ''}`}
-                style={{ left: `${position.x}%`, top: `${position.y}%` }}
+                name={agent.name}
+                archetype={archetype}
+                state={String(agent.state ?? 'idle')}
+                x={position.x}
+                y={position.y}
+                selected={active}
                 onClick={() => {
                   select(agent.id);
                   setPanel('agents');
                   setNotice(`${agent.name} · ${archetype} · ${String(agent.state ?? 'unknown')} · runtime profile opened`);
                 }}
-                title={`${agent.name} · ${archetype}`}
-              >
-                <span className="open-world__agent-avatar">
-                  <span className="open-world__agent-head" />
-                  <span className="open-world__agent-body" />
-                  <span className="open-world__agent-role">{archetype.slice(0, 3).toUpperCase()}</span>
-                </span>
-                <span className="open-world__agent-label">{agent.name} · {archetype}</span>
-              </button>
+              />
             );
           })}
 
