@@ -7,13 +7,9 @@
   "types": "./src/index.ts",
   "exports": {
     ".": "./src/index.ts",
-    "./mount": "./src/VillageMount.tsx"
+    "./mount": "./src/VillageMount.tsx",
+    "./state/economyStore": "./src/state/economyStore.ts"
   },
-"exports": {
-  ".": "./src/index.ts",
-  "./mount": "./src/VillageMount.tsx",
-  "./state/economyStore": "./src/state/economyStore.ts"
-},
   "scripts": {
     "typecheck": "tsc --noEmit",
     "clean": "rimraf dist"
