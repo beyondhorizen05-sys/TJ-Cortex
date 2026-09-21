@@ -50,6 +50,8 @@ export function OpenWorldPanel() {
   ], []);
   const ceoScheduleRef = useRef({ index: 0, elapsed: 0 });
   const [ceoActivity, setCeoActivity] = useState('HQ Operations');
+  const [ceoInteraction, setCeoInteraction] = useState<string | null>(null);
+  const ceoInteractionRef = useRef<string | null>(null);
   const [interactionLocked, setInteractionLocked] = useState(false);
   const keys = useRef(new Set<string>());
   const nearestRef = useRef<(typeof BUILDINGS)[number] | null>(null);
@@ -224,6 +226,21 @@ export function OpenWorldPanel() {
           setCeoActivity(ceoSchedule[ceoScheduleRef.current.index].name);
         }
         const activeSchedule = ceoSchedule[ceoScheduleRef.current.index];
+        const nearbyWorldAgent = agents.slice(0, 12).filter((a) => a.id !== ceoAgent.id).map((a, index) => ({
+          agent: a,
+          pos: nextAgentPositions[a.id] ?? getAgentHome(index),
+        })).find(({ pos }) => Math.hypot(pos.x - current.x, pos.y - current.y) < 5.5);
+        if (nearbyWorldAgent && activeSchedule.name === 'HQ Operations' && !ceoConsoleOpen && !ceoSpeaking) {
+          const message = `${ceoAgent.name} · coordinating with ${nearbyWorldAgent.agent.name}`;
+          if (ceoInteractionRef.current !== nearbyWorldAgent.agent.id) {
+            ceoInteractionRef.current = nearbyWorldAgent.agent.id;
+            setCeoInteraction(message);
+            setNotice(message);
+          }
+        } else if (!nearbyWorldAgent && ceoInteractionRef.current) {
+          ceoInteractionRef.current = null;
+          setCeoInteraction(null);
+        }
         const target = ceoConsoleOpen || ceoSpeaking
           ? current
           : runtimeState.includes('meeting')
@@ -286,7 +303,7 @@ export function OpenWorldPanel() {
           <p className="open-world__eyebrow">TJ-CORTEX // OPEN WORLD</p>
           <h1>Living Agent City</h1>
           <p className="open-world__notice">{notice}</p>
-          <p className="open-world__ceo-badge">{ceoAgent ? `CEO AGENT · ${ceoAgent.name} · ${ceoActivity}` : "CEO CHARACTER · READY FOR IDENTITY"}</p>
+          <p className="open-world__ceo-badge">{ceoAgent ? `CEO AGENT · ${ceoAgent.name} · ${ceoInteraction ?? ceoActivity}` : "CEO CHARACTER · READY FOR IDENTITY"}</p>
         </div>
         <div className="open-world__status">
           <span className="open-world__dot" />
@@ -371,7 +388,7 @@ export function OpenWorldPanel() {
             <span className="open-world__ceo-avatar-silhouette" />
           </div>
           <strong>{ceoAgent?.name ?? 'Identity pending'}</strong>
-          <small>{ceoAgent ? `Main AI · Executive control · ${ceoActivity}` : 'Startup will request her name'}</small>
+          <small>{ceoAgent ? `Main AI · Executive control · ${ceoInteraction ?? ceoActivity}` : 'Startup will request her name'}</small>
         </div>
         <div>
           <span className="open-world__panel-label">PLAYER</span>
