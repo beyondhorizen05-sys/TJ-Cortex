@@ -99,7 +99,7 @@ export const Guild = z.object({
   memberAgentIds: z.array(z.string()).default([]),
   createdAt: z.number(),
 });
-export type Guild = z.infer(typeof Guild extends never ? never : Guild);
+export type Guild = z.infer<typeof Guild>;
 
 export const Reputation = z.object({
   agentId: z.string(),
