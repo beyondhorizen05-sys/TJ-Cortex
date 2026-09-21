@@ -334,3 +334,8 @@
 .open-world__ceo-character--facing-right .open-world__ceo-character-fallback { transform:scaleX(1); }
 .open-world__ceo-character--walking .open-world__ceo-character-state::before { content:'● '; animation:ceoStepDot .55s steps(2,end) infinite; }
 @keyframes ceoStepDot { 50% { opacity:.25; } }
+
+
+.open-world__ceo-badge { transition: color 180ms ease, text-shadow 180ms ease; }
+.open-world__ceo-card { position:relative; }
+.open-world__ceo-card::after { content:'AUTONOMOUS'; position:absolute; right:0; top:0; padding:2px 5px; border:1px solid rgba(103,232,249,.18); border-radius:3px; color:#67e8f9; font:600 7px 'JetBrains Mono',monospace; letter-spacing:.1em; }
