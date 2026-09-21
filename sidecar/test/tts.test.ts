@@ -9,7 +9,7 @@ test('synthesizeSpeech writes through Piper with one configured voice', async ()
   const dir = await mkdtemp(join(tmpdir(), 'tj-cortex-tts-test-'));
   const output = join(dir, 'speech.wav');
   const runner: PiperRunner = async (_executable, args, input) => {
-    assert.deepEqual(args, ['--model', 'models/en_US-lessac-medium.onnx', '--output_file', output, '--quiet']);
+    assert.deepEqual(args, ['--model', join(process.cwd(), 'models/en_US-lessac-medium.onnx'), '--output_file', output, '--quiet']);
     assert.equal(input, 'Hello from TJ-Cortex.');
     await writeFile(output, Buffer.from('RIFFFAKEWAV'));
   };
