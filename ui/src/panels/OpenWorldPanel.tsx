@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useAgents } from '../store/agents';
 import { CrewRecruitConsole } from '../components/CrewRecruitConsole';
+import { CeoCharacter } from '../components/CeoCharacter';
 import { useUi, type PanelId } from '../store/ui';
 
 type Vec2 = { x: number; y: number };
@@ -245,6 +246,21 @@ export function OpenWorldPanel() {
               <small>{building.subtitle}</small>
             </button>
           ))}
+
+          {ceoAgent && (
+            <CeoCharacter
+              name={ceoAgent.name}
+              state={String(ceoAgent.state ?? 'idle')}
+              x={agentWorldPositions[ceoAgent.id]?.x ?? 50}
+              y={agentWorldPositions[ceoAgent.id]?.y ?? 52}
+              selected={ceoAgent.id === selectedId}
+              onClick={() => {
+                select(ceoAgent.id);
+                setPanel('agents');
+                setNotice(`${ceoAgent.name} · CEO Agent · executive runtime opened`);
+              }}
+            />
+          )}
 
           {agents.slice(0, 12).map((agent, index) => {
             const active = agent.id === selectedId;
