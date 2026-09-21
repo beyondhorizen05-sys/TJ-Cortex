@@ -19,6 +19,15 @@ export function TranscriptPanel() {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const onVoiceTranscript = (event: Event) => {
+      const text = (event as CustomEvent<string>).detail?.trim();
+      if (text) setInput((current) => current ? current + ' ' + text : text);
+    };
+    window.addEventListener('tj-cortex:voice-transcript', onVoiceTranscript);
+    return () => window.removeEventListener('tj-cortex:voice-transcript', onVoiceTranscript);
+  }, []);
+
+  useEffect(() => {
     if (agentId) conversations.load().catch(console.error);
   }, [agentId]);
 
