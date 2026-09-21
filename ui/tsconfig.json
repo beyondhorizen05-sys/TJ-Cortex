@@ -5,9 +5,12 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "types": ["vite/client"],
-    "resolveJsonModule": true
-    "@tj-cortex/village": ["../village/src/index.ts"],
-    "@tj-cortex/village/mount": ["../village/src/VillageMount.tsx"]
+    "resolveJsonModule": true,
+    "baseUrl": "..",
+    "paths": {
+      "@tj-cortex/village": ["village/src/index.ts"],
+      "@tj-cortex/village/*": ["village/src/*"]
+    }
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"]
 }
