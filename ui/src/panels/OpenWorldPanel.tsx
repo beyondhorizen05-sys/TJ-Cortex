@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useAgents } from '../store/agents';
 import { CrewRecruitConsole } from '../components/CrewRecruitConsole';
+import { useUi, type PanelId } from '../store/ui';
 
 type Vec2 = { x: number; y: number };
 
@@ -12,6 +13,14 @@ const BUILDINGS = [
   { id: 'mcp', name: 'MCP Facility', subtitle: 'Tools & connectors', x: 18, y: 67, tone: 'blue' },
   { id: 'meeting', name: 'Meeting Center', subtitle: 'Agent meetings', x: 43, y: 38, tone: 'rose' },
 ] as const;
+
+const BUILDING_PANELS: Partial<Record<(typeof BUILDINGS)[number]['id'], PanelId>> = {
+  guild: 'reputation', bank: 'wallet', outbox: 'outbox', mcp: 'mcp', meeting: 'transcript',
+};
+
+/*
+] as const;
+*/
 
 const MOVEMENT_KEYS = new Set(['w', 'a', 's', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright', 'shift']);
 
@@ -27,6 +36,8 @@ export function OpenWorldPanel() {
   const keys = useRef(new Set<string>());
   const playerRef = useRef(player);
   const selected = agents.find((a) => a.id === selectedId);
+  const setPanel = useUi((s) => s.setPanel);
+  const setPanel = useUi((s) => s.setPanel);
 
   useEffect(() => {
     playerRef.current = player;
@@ -65,6 +76,8 @@ export function OpenWorldPanel() {
         setNotice('Agent HQ — crew recruitment desk opened');
       } else {
         setNotice(`${nearest.name} — ${nearest.subtitle}`);
+        const panel = BUILDING_PANELS[nearest.id];
+        if (panel) setPanel(panel);
       }
     };
 
@@ -143,9 +156,11 @@ export function OpenWorldPanel() {
                 if (building.id === 'hq') {
                   setCrewConsoleOpen(true);
                   setNotice('Agent HQ — crew recruitment desk opened');
-                } else {
-                  setNotice(`${building.name} — ${building.subtitle}`);
+                  return;
                 }
+                setNotice(`${building.name} — ${building.subtitle}`);
+                const panel = BUILDING_PANELS[building.id];
+                if (panel) setPanel(panel);
               }}
             >
               <span className="open-world__building-top" />
