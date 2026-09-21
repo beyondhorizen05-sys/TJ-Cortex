@@ -326,3 +326,11 @@
 @keyframes ceoMeetingPulse { 0%,100% { transform:scale(1); } 50% { transform:scale(1.025); } }
 @keyframes ceoCommandPulse { 0%,100% { transform:translateY(0) scale(1); } 50% { transform:translateY(-3px) scale(1.035); } }
 @keyframes ceoSpeakPulse { 0%,100% { transform:translateY(0) scaleY(1); } 50% { transform:translateY(-2px) scaleY(1.025); } }
+
+
+.open-world__ceo-character--facing-left .open-world__ceo-character-model,
+.open-world__ceo-character--facing-left .open-world__ceo-character-fallback { transform:scaleX(-1); }
+.open-world__ceo-character--facing-right .open-world__ceo-character-model,
+.open-world__ceo-character--facing-right .open-world__ceo-character-fallback { transform:scaleX(1); }
+.open-world__ceo-character--walking .open-world__ceo-character-state::before { content:'● '; animation:ceoStepDot .55s steps(2,end) infinite; }
+@keyframes ceoStepDot { 50% { opacity:.25; } }
