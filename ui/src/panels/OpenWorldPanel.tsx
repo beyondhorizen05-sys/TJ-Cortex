@@ -179,7 +179,8 @@ export function OpenWorldPanel() {
     let frame = 0;
     let last = performance.now();
     const tick = (now: number) => {
-      const dt = Math.min(32, now - last) / 16.67;
+      const deltaMs = Math.min(32, now - last);
+      const dt = deltaMs / 16.67;
       last = now;
       const held = keys.current;
       const horizontal = (held.has('a') || held.has('arrowleft') ? -1 : 0) + (held.has('d') || held.has('arrowright') ? 1 : 0);
@@ -215,7 +216,7 @@ export function OpenWorldPanel() {
         const runtimeState = String(ceoAgent.state ?? 'idle').toLowerCase();
         const schedule = ceoSchedule[ceoScheduleRef.current.index];
         if (!ceoConsoleOpen && !ceoSpeaking && !runtimeState.includes('offline')) {
-          ceoScheduleRef.current.elapsed += now - (now - Math.min(32, (now - last) * 16.67));
+          ceoScheduleRef.current.elapsed += deltaMs;
           if (ceoScheduleRef.current.elapsed >= schedule.duration) {
             ceoScheduleRef.current.index = (ceoScheduleRef.current.index + 1) % ceoSchedule.length;
             ceoScheduleRef.current.elapsed = 0;
