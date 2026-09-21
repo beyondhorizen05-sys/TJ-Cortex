@@ -196,6 +196,23 @@ export const reputations = sqliteTable('reputations', {
   updatedAt: integer('updated_at').notNull(),
 });
 
+/* ---------- Task Briefs ---------- */
+export const taskBriefs = sqliteTable('task_briefs', {
+  id: text('id').primaryKey(),
+  agentId: text('agent_id').notNull(),
+  title: text('title').notNull(),
+  question: text('question').notNull(),
+  optionsJson: text('options_json').notNull().default('[]'),
+  status: text('status').notNull().default('pending'),
+  selectedOptionId: text('selected_option_id'),
+  answerNote: text('answer_note'),
+  createdAt: integer('created_at').notNull(),
+  answeredAt: integer('answered_at'),
+  expiresAt: integer('expires_at'),
+}, (t) => ({
+  agentStatusIdx: index('task_briefs_agent_status_idx').on(t.agentId, t.status),
+}));
+
 /* ---------- Recipes & Skills ---------- */
 export const recipes = sqliteTable('recipes', {
   id: text('id').primaryKey(),
@@ -291,6 +308,7 @@ export const schema = {
   bounties,
   guilds,
   reputations,
+  taskBriefs,
   recipes,
   skills,
   mcpServers,
