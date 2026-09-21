@@ -35,6 +35,7 @@ export function OpenWorldPanel() {
   const agentWorldPositionsRef = useRef<Record<string, Vec2>>({});
   const [crewConsoleOpen, setCrewConsoleOpen] = useState(false);
   const [ceoConsoleOpen, setCeoConsoleOpen] = useState(false);
+  const [ceoWalking, setCeoWalking] = useState(false);
   const [interactionLocked, setInteractionLocked] = useState(false);
   const keys = useRef(new Set<string>());
   const nearestRef = useRef<(typeof BUILDINGS)[number] | null>(null);
@@ -195,6 +196,8 @@ export function OpenWorldPanel() {
         setAgentWorldPositions(nextAgentPositions);
       }
 
+      setCeoWalking(moving && Boolean(ceoAgent));
+
       if (moving) {
         setPlayer((current) => {
           const next = {
@@ -222,7 +225,7 @@ export function OpenWorldPanel() {
       window.removeEventListener('keyup', up);
       window.removeEventListener('keydown', interact);
     };
-  }, [nearest]);
+  }, [nearest, ceoAgent, agents, select]);
 
   return (
     <section className="open-world">
@@ -263,7 +266,8 @@ export function OpenWorldPanel() {
           {ceoAgent && (
             <CeoCharacter
               name={ceoAgent.name}
-              state={String(ceoAgent.state ?? 'idle')}
+              state={ceoConsoleOpen ? 'command' : ceoWalking ? 'walking' : String(ceoAgent.state ?? 'idle')}
+              isCommandOpen={ceoConsoleOpen}
               x={agentWorldPositions[ceoAgent.id]?.x ?? 50}
               y={agentWorldPositions[ceoAgent.id]?.y ?? 52}
               selected={ceoAgent.id === selectedId}
