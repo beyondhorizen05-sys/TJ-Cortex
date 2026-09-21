@@ -4,7 +4,7 @@
     "outDir": "./dist",
     "noEmit": true,
     "jsx": "react-jsx",
-    "types": ["three"]
+    "types": ["react", "react-dom", "three"]
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"]
 }
