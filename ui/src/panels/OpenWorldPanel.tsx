@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useAgents } from '../store/agents';
 import { CrewRecruitConsole } from '../components/CrewRecruitConsole';
 import { CeoCharacter } from '../components/CeoCharacter';
+import { CeoExecutiveConsole } from '../components/CeoExecutiveConsole';
 import { useUi, type PanelId } from '../store/ui';
 
 type Vec2 = { x: number; y: number };
@@ -33,6 +34,7 @@ export function OpenWorldPanel() {
   const [agentWorldPositions, setAgentWorldPositions] = useState<Record<string, Vec2>>({});
   const agentWorldPositionsRef = useRef<Record<string, Vec2>>({});
   const [crewConsoleOpen, setCrewConsoleOpen] = useState(false);
+  const [ceoConsoleOpen, setCeoConsoleOpen] = useState(false);
   const [interactionLocked, setInteractionLocked] = useState(false);
   const keys = useRef(new Set<string>());
   const nearestRef = useRef<(typeof BUILDINGS)[number] | null>(null);
@@ -63,7 +65,7 @@ export function OpenWorldPanel() {
   useEffect(() => {
     nearestRef.current = nearest;
     setNearby(nearest?.id ?? null);
-  }, [nearest]);
+  }, [nearest, ceoAgent, agents, select]);
 
   const getAgentHome = (index: number): Vec2 => ({
     x: 27 + (index % 4) * 7,
@@ -129,6 +131,17 @@ export function OpenWorldPanel() {
     const up = (event: KeyboardEvent) => keys.current.delete(event.key.toLowerCase());
     const interact = (event: KeyboardEvent) => {
       if (event.key.toLowerCase() !== 'e') return;
+      if (ceoAgent && !interactionLockRef.current) {
+        const ceoPosition = agentWorldPositionsRef.current[ceoAgent.id];
+        if (ceoPosition && Math.hypot(ceoPosition.x - playerRef.current.x, ceoPosition.y - playerRef.current.y) < 9) {
+          event.preventDefault();
+          interactionLockRef.current = true;
+          setInteractionLocked(true);
+          setCeoConsoleOpen(true);
+          setNotice(`${ceoAgent.name} · executive command layer opened`);
+          return;
+        }
+      }
       const building = nearestRef.current;
       if (building && !interactionLockRef.current) {
         event.preventDefault();
@@ -256,8 +269,10 @@ export function OpenWorldPanel() {
               selected={ceoAgent.id === selectedId}
               onClick={() => {
                 select(ceoAgent.id);
-                setPanel('agents');
-                setNotice(`${ceoAgent.name} · CEO Agent · executive runtime opened`);
+                interactionLockRef.current = true;
+                setInteractionLocked(true);
+                setCeoConsoleOpen(true);
+                setNotice(`${ceoAgent.name} · executive command layer opened`);
               }}
             />
           )}
@@ -320,8 +335,20 @@ export function OpenWorldPanel() {
       {interactionLocked && (
         <button className="open-world__interaction-backdrop" aria-label="Close active interaction" onClick={() => {
           setCrewConsoleOpen(false);
+          setCeoConsoleOpen(false);
           releaseInteractionLock();
         }} />
+      )}
+      {ceoConsoleOpen && ceoAgent && (
+        <CeoExecutiveConsole
+          ceo={ceoAgent}
+          agents={agents}
+          onClose={() => {
+            setCeoConsoleOpen(false);
+            releaseInteractionLock();
+          }}
+          onNotice={setNotice}
+        />
       )}
       {crewConsoleOpen && (
         <CrewRecruitConsole
